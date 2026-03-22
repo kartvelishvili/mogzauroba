@@ -112,7 +112,7 @@ export default function Footer() {
             © 2024–2026 Mogzauroba.com — ყველა უფლება დაცულია
           </p>
           <p className="text-slate-400 text-xs">
-            Powered by Travelpayouts API & Supabase
+            მხარდაჭერილია: Travelpayouts
           </p>
         </div>
       </div>
