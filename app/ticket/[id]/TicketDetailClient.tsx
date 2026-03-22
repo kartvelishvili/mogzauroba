@@ -8,6 +8,7 @@ import {
   Calendar, Tag, Plane, Car
 } from 'lucide-react';
 import { getCountryFlag } from '@/app/lib/travel';
+import { useLang } from '@/app/lib/i18n';
 
 interface ServiceItem {
   id: string;
@@ -22,23 +23,12 @@ interface ServiceItem {
   image_url?: string;
 }
 
-const destinationLabels: Record<string, string> = {
-  PAR: 'პარიზი', ROM: 'რომი', BCN: 'ბარსელონა', LON: 'ლონდონი',
-  AMS: 'ამსტერდამი', BER: 'ბერლინი', PRG: 'პრაღა', VIE: 'ვენა',
-  ATH: 'ათენი', IST: 'სტამბოლი', MAD: 'მადრიდი', MIL: 'მილანი',
-  DXB: 'დუბაი', BKK: 'ბანგკოკი', TYO: 'ტოკიო', SIN: 'სინგაპური',
-  HKG: 'ჰონგ კონგი', DEL: 'დელი', TLV: 'თელ-ავივი',
-  NYC: 'ნიუ-იორკი', MIA: 'მაიამი', CUN: 'კანკუნი',
-  CAI: 'კაირო', MRK: 'მარაკეში',
-  TBS: 'თბილისი', KUT: 'ქუთაისი', BUS: 'ბათუმი',
-};
-
-const categoryLabels: Record<string, string> = {
-  ticket: 'ბილეთი / ატრაქციონი',
-  tour: 'ტური / ექსკურსია',
-  hotel: 'სასტუმრო',
-  transfer: 'ტრანსფერი',
-  flight: 'ავიაბილეთი',
+const categoryKeyMap: Record<string, string> = {
+  ticket: 'td.ticketAttraction',
+  tour: 'td.tourExcursion',
+  hotel: 'td.hotelCat',
+  transfer: 'td.transferCat',
+  flight: 'td.flightCat',
 };
 
 const fallbackImages = [
@@ -47,14 +37,10 @@ const fallbackImages = [
   'https://images.unsplash.com/photo-1562883676-8c7feb83f09b?q=80&w=900&auto=format&fit=crop',
 ];
 
-const badges = [
-  { icon: CheckCircle, label: 'მყისიერი დადასტურება', color: 'text-emerald-600' },
-  { icon: Smartphone, label: 'მობილური ბილეთი', color: 'text-blue-600' },
-  { icon: XCircle, label: 'უფასო გაუქმება 24სთ', color: 'text-rose-600' },
-  { icon: ShieldCheck, label: 'დაცული გადახდა', color: 'text-purple-600' },
-];
+
 
 export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
+  const { t, lang } = useLang();
   const [ticket, setTicket] = useState<ServiceItem | null>(null);
   const [related, setRelated] = useState<ServiceItem[]>([]);
   const [nearbyHotels, setNearbyHotels] = useState<ServiceItem[]>([]);
@@ -96,20 +82,27 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center text-center px-4">
         <Ticket size={64} className="text-slate-300 mb-6" />
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">ბილეთი ვერ მოიძებნა</h1>
-        <p className="text-slate-500 mb-6">მოთხოვნილი ბილეთი არ არსებობს ან წაიშალა</p>
+        <h1 className="text-2xl font-bold text-slate-800 mb-2">{t('td.notFound')}</h1>
+        <p className="text-slate-500 mb-6">{t('td.notFoundDesc')}</p>
         <Link href="/" className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-xl font-bold transition-colors">
-          მთავარ გვერდზე დაბრუნება
+          {t('td.backToHome')}
         </Link>
       </div>
     );
   }
 
-  const cityLabel = destinationLabels[ticket.destination] || ticket.destination;
-  const catLabel = categoryLabels[ticket.category] || ticket.category;
+  const cityLabel = t('city.' + ticket.destination) || ticket.destination;
+  const catLabel = t(categoryKeyMap[ticket.category] || 'td.ticketAttraction');
   const imgSrc = ticket.image_url || fallbackImages[0];
   const rating = (4.5 + Math.random() * 0.49).toFixed(2);
   const reviews = Math.floor(10000 + Math.random() * 90000);
+
+  const badges = [
+    { icon: CheckCircle, label: t('td.instantConfirm'), color: 'text-emerald-600' },
+    { icon: Smartphone, label: t('td.mobileTicket'), color: 'text-blue-600' },
+    { icon: XCircle, label: t('td.freeCancel24'), color: 'text-rose-600' },
+    { icon: ShieldCheck, label: t('td.securePay'), color: 'text-purple-600' },
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -122,7 +115,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
         <div className="absolute top-6 left-6 z-10">
           <Link href="/" className="flex items-center gap-2 bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-xl hover:bg-black/70 transition-colors text-sm font-medium">
             <ArrowLeft size={18} />
-            უკან
+            {t('td.back')}
           </Link>
         </div>
 
@@ -171,11 +164,13 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
             <div className="bg-white border border-slate-200 rounded-2xl p-6">
               <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
                 <Tag size={20} className="text-purple-600" />
-                ბილეთის შესახებ
+                {t('td.aboutTicket')}
               </h2>
               <p className="text-slate-600 leading-relaxed">
                 {ticket.description || 
-                  `${ticket.title} — აღმოაჩინე ${cityLabel}-ის ერთ-ერთი საუკეთესო ტურისტული ადგილი. ონლაინ შეძენით თქვენ მიიღებთ მყისიერ ელექტრონულ ბილეთს, რომელიც შეგიძლიათ გამოიყენოთ უშუალოდ შესასვლელთან, რიგის გარეშე. ბილეთი მოქმედებს შეძენიდან 12 თვის განმავლობაში.`
+                  (lang === 'ka'
+                    ? `${ticket.title} — აღმოაჩინე ${cityLabel}-ის ერთ-ერთი საუკეთესო ტურისტული ადგილი. ონლაინ შეძენით თქვენ მიიღებთ მყისიერ ელექტრონულ ბილეთს, რომელიც შეგიძლიათ გამოიყენოთ უშუალოდ შესასვლელთან, რიგის გარეშე. ბილეთი მოქმედებს შეძენიდან 12 თვის განმავლობაში.`
+                    : `${ticket.title} — Discover one of the best tourist attractions in ${cityLabel}. With online purchase you'll receive an instant e-ticket that can be used directly at the entrance, skip the line. The ticket is valid for 12 months from purchase.`)
                 }
               </p>
             </div>
@@ -184,29 +179,29 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <DetailCard 
                 icon={<Clock size={20} className="text-emerald-600" />}
-                label="სამუშაო საათები"
+                label={t('td.workHours')}
                 value="10:00 — 22:00"
               />
               <DetailCard 
                 icon={<MapPin size={20} className="text-blue-600" />}
-                label="მდებარეობა"
+                label={t('td.location')}
                 value={cityLabel}
               />
               <DetailCard 
                 icon={<Smartphone size={20} className="text-purple-600" />}
-                label="ბილეთის ტიპი"
-                value="ელექტრონული"
+                label={t('td.ticketType')}
+                value={t('td.electronic')}
               />
               <DetailCard 
                 icon={<Calendar size={20} className="text-amber-600" />}
-                label="გაუქმება"
-                value="უფასო 24სთ"
+                label={t('td.cancellation')}
+                value={t('td.freeCancelValue')}
               />
             </div>
 
             {/* Provider info */}
             <div className="bg-white border border-slate-200 rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-slate-800 mb-4">პროვაიდერი</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-4">{t('td.provider')}</h2>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 font-bold text-lg">
@@ -214,12 +209,12 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
                   </div>
                   <div>
                     <p className="text-slate-800 font-bold">{ticket.provider}</p>
-                    <p className="text-slate-500 text-sm">ოფიციალური პარტნიორი</p>
+                    <p className="text-slate-500 text-sm">{t('td.officialPartner')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-emerald-600">
                   <ShieldCheck size={16} />
-                  <span className="text-sm font-medium">ვერიფიცირებული</span>
+                  <span className="text-sm font-medium">{t('td.verified')}</span>
                 </div>
               </div>
             </div>
@@ -230,10 +225,10 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
             {/* Price card */}
             <div className="bg-white border border-slate-200 rounded-2xl p-6 sticky top-32">
               <div className="text-center mb-6">
-                <p className="text-slate-500 text-sm mb-1">ფასი</p>
+                <p className="text-slate-500 text-sm mb-1">{t('td.price')}</p>
                 <p className="text-4xl font-black text-emerald-600">
                   €{Number(ticket.price).toFixed(0)}
-                  <span className="text-base font-normal text-slate-500 ml-1">/ადამ.</span>
+                  <span className="text-base font-normal text-slate-500 ml-1">{t('td.perPerson')}</span>
                 </p>
               </div>
 
@@ -244,20 +239,20 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
                 className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold text-center flex items-center justify-center gap-2 transition-colors mb-4"
               >
                 <ExternalLink size={18} />
-                შეიძინე ახლა
+                {t('td.buyNow')}
               </a>
 
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>კურსი</span>
+                  <span>{t('td.currency')}</span>
                   <span className="text-slate-800">{ticket.currency || 'EUR'}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>ტიპი</span>
+                  <span>{t('td.type')}</span>
                   <span className="text-slate-800">{catLabel}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>ქალაქი</span>
+                  <span>{t('td.city')}</span>
                   <span className="text-slate-800">{cityLabel}</span>
                 </div>
               </div>
@@ -270,7 +265,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
               <Ticket size={22} className="text-purple-600" />
-              ხშირად ყიდულობენ ერთად
+              {t('td.boughtTogether')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {related.map((item, i) => (
@@ -304,7 +299,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
               <Hotel size={22} className="text-emerald-600" />
-              {cityLabel}-ში სასტუმროები
+              {t('td.hotelsIn')} {cityLabel}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               {nearbyHotels.map((hotel, i) => (
@@ -327,7 +322,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
                     </p>
                     <p className="text-emerald-600 font-black mt-2">
                       €{Number(hotel.price).toFixed(0)}
-                      <span className="text-slate-500 text-xs font-normal ml-1">/ღამე</span>
+                      <span className="text-slate-500 text-xs font-normal ml-1">{t('td.perNight')}</span>
                     </p>
                   </div>
                 </Link>
@@ -344,7 +339,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
             <div className="mt-16">
               <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
                 <Plane size={22} className="text-blue-600" />
-                ფრენები {cityLabel}-ში
+                {t('td.flightsTo')} {cityLabel}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {flights.map((f, i) => (
@@ -373,20 +368,20 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
             <div className="mt-16">
               <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
                 <Car size={22} className="text-amber-600" />
-                ტრანსფერი {cityLabel}-ში
+                {t('td.transferIn')} {cityLabel}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {transfers.map((t, i) => (
-                  <a key={t.id || i} href={t.external_link} target="_blank" rel="noopener noreferrer"
+                {transfers.map((tr, i) => (
+                  <a key={tr.id || i} href={tr.external_link} target="_blank" rel="noopener noreferrer"
                     className="bg-white border border-slate-200 rounded-2xl p-4 hover:border-amber-400 transition-all flex items-center gap-4">
                     <div className="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center shrink-0">
                       <Car size={20} className="text-amber-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-slate-800 line-clamp-1">{t.title}</p>
-                      <p className="text-xs text-slate-500">{t.provider}</p>
+                      <p className="text-sm font-bold text-slate-800 line-clamp-1">{tr.title}</p>
+                      <p className="text-xs text-slate-500">{tr.provider}</p>
                     </div>
-                    <p className="text-emerald-600 font-black shrink-0">€{t.price}</p>
+                    <p className="text-emerald-600 font-black shrink-0">€{tr.price}</p>
                   </a>
                 ))}
               </div>
@@ -404,9 +399,9 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
                 <Smartphone size={32} className="text-purple-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-slate-800 mb-1">eSIM — ინტერნეტი {cityLabel}-ში</h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-1">{t('td.esimIn')} {cityLabel}</h3>
                 <p className="text-slate-500 text-sm">
-                  მოგზაურობისას ინტერნეტი ჩამოფრენისთანავე. SIM ბარათის ყიდვა აღარ გჭირდება.
+                  {t('td.esimDesc')}
                 </p>
               </div>
               <div className="flex items-center gap-3">

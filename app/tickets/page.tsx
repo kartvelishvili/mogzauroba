@@ -3,12 +3,14 @@
 import { Suspense } from 'react';
 import ServicePage from '@/app/components/ServicePage';
 import { Ticket } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 function TicketsContent() {
+  const { t } = useLang();
   return (
     <ServicePage 
-      title="ბილეთები & ატრაქციონები" 
-      description="ბილეთები და ტურები ერთ ადგილას — Tiqets, Musement, Klook, GetYourGuide." 
+      title={t('tickets.pageTitle')} 
+      description={t('tickets.pageDesc')} 
       icon={Ticket} 
       category="ticket,tour"
       categoryFilter={true}

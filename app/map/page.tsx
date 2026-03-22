@@ -2,8 +2,10 @@
 
 import { MapPin } from 'lucide-react';
 import Footer from '../components/Footer';
+import { useLang } from '@/app/lib/i18n';
 
 export default function MapPage() {
+  const { t } = useLang();
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1 p-6 md:p-12 max-w-7xl mx-auto w-full flex flex-col">
@@ -12,8 +14,8 @@ export default function MapPage() {
             <MapPin size={32} className="text-amber-600" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-slate-800 tracking-tight">რუკა</h1>
-            <p className="text-slate-500 mt-1">დაგეგმე მარშრუტი და მოძებნე ახლო ლოკაციები.</p>
+            <h1 className="text-4xl font-black text-slate-800 tracking-tight">{t('mp.title')}</h1>
+            <p className="text-slate-500 mt-1">{t('mp.subtitle')}</p>
           </div>
         </div>
         <div className="w-full h-px bg-slate-200 my-10" />
@@ -28,8 +30,8 @@ export default function MapPage() {
              referrerPolicy="no-referrer-when-downgrade"
            ></iframe>
            <div className="relative z-10 bg-white/90 backdrop-blur-xl border border-slate-200 p-8 rounded-3xl max-w-md text-center pointer-events-none shadow-lg">
-              <h3 className="text-2xl font-bold mb-4 text-slate-800">მსოფლიო რუკა</h3>
-              <p className="text-slate-500">აღმოაჩინე 27+ მიმართულება მსოფლიოს ყველა კონტინენტზე — ევროპა, აზია, ამერიკა, აფრიკა.</p>
+              <h3 className="text-2xl font-bold mb-4 text-slate-800">{t('mp.worldMap')}</h3>
+              <p className="text-slate-500">{t('mp.worldDesc')}</p>
            </div>
         </div>
       </div>

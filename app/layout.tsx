@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/app/components/Header";
 import CookieConsent from "@/app/components/CookieConsent";
+import { ClientProviders } from "@/app/components/ClientProviders";
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -11,17 +12,18 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://mogzauroba.com"),
   title: {
-    default: "Mogzauroba.com — სამოგზაურო პლატფორმა",
+    default: "Mogzauroba.com — Travel Platform / სამოგზაურო პლატფორმა",
     template: "%s | Mogzauroba.com",
   },
   description:
-    "ავიაბილეთები, სასტუმროები, ტურები, ტრანსფერები და სამოგზაურო სერვისები ერთიან ჭკვიან ძიებაში.",
+    "Flights, hotels, tours, transfers — ავიაბილეთები, სასტუმროები, ტურები, ტრანსფერები ერთიან ძიებაში.",
   openGraph: {
     title: "Mogzauroba.com",
     description:
-      "იპოვე ფრენები, სასტუმროები, ტურები და ტრანსფერები ერთ თანამედროვე სამოგზაურო პლატფორმაზე.",
+      "Find flights, hotels, tours, and transfers on one modern travel platform.",
     type: "website",
     locale: "ka_GE",
+    alternateLocale: "en_US",
   },
   robots: {
     index: true,
@@ -44,11 +46,13 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.web-fonts.ge/fonts/bpg-nino-mtavruli-bold/css/bpg-nino-mtavruli-bold.min.css" crossOrigin="anonymous" />
       </head>
       <body className="antialiased bg-white text-slate-800">
-        <Header />
-        <div className="pt-16 xl:pt-28">
-          {children}
-        </div>
-        <CookieConsent />
+        <ClientProviders>
+          <Header />
+          <div className="pt-16 xl:pt-28">
+            {children}
+          </div>
+          <CookieConsent />
+        </ClientProviders>
       </body>
     </html>
   );

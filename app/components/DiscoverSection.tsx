@@ -6,6 +6,7 @@ import {
   Ticket, Hotel, MapPin, Star, ChevronRight, ChevronLeft, 
   Loader2, Globe, Filter 
 } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 interface ServiceItem {
   id: string;
@@ -20,66 +21,66 @@ interface ServiceItem {
   image_url?: string;
 }
 
-const regions = [
-  { id: 'ყველა', label: 'ყველა' },
-  { id: 'ევროპა', label: 'ევროპა' },
-  { id: 'აზია', label: 'აზია' },
-  { id: 'ამერიკა', label: 'ამერიკა' },
-  { id: 'აფრიკა', label: 'აფრიკა' },
-  { id: 'საქართველო', label: 'საქართველო' },
+const regionKeys = [
+  { id: 'all', key: 'discover.all' },
+  { id: 'europe', key: 'discover.europe' },
+  { id: 'asia', key: 'discover.asia' },
+  { id: 'america', key: 'discover.america' },
+  { id: 'africa', key: 'discover.africa' },
+  { id: 'georgia', key: 'discover.georgia' },
 ];
 
-const cityData: Record<string, { code: string; label: string; region: string; flag: string }[]> = {
-  'ევროპა': [
-    { code: 'PAR', label: 'პარიზი', region: 'ევროპა', flag: '🇫🇷' },
-    { code: 'ROM', label: 'რომი', region: 'ევროპა', flag: '🇮🇹' },
-    { code: 'BCN', label: 'ბარსელონა', region: 'ევროპა', flag: '🇪🇸' },
-    { code: 'LON', label: 'ლონდონი', region: 'ევროპა', flag: '🇬🇧' },
-    { code: 'AMS', label: 'ამსტერდამი', region: 'ევროპა', flag: '🇳🇱' },
-    { code: 'BER', label: 'ბერლინი', region: 'ევროპა', flag: '🇩🇪' },
-    { code: 'PRG', label: 'პრაღა', region: 'ევროპა', flag: '🇨🇿' },
-    { code: 'VIE', label: 'ვენა', region: 'ევროპა', flag: '🇦🇹' },
-    { code: 'ATH', label: 'ათენი', region: 'ევროპა', flag: '🇬🇷' },
-    { code: 'IST', label: 'სტამბოლი', region: 'ევროპა', flag: '🇹🇷' },
-    { code: 'MAD', label: 'მადრიდი', region: 'ევროპა', flag: '🇪🇸' },
-    { code: 'MIL', label: 'მილანი', region: 'ევროპა', flag: '🇮🇹' },
+const cityDataByRegion: Record<string, { code: string; labelKey: string; flag: string }[]> = {
+  'europe': [
+    { code: 'PAR', labelKey: 'city.PAR', flag: '🇫🇷' },
+    { code: 'ROM', labelKey: 'city.ROM', flag: '🇮🇹' },
+    { code: 'BCN', labelKey: 'city.BCN', flag: '🇪🇸' },
+    { code: 'LON', labelKey: 'city.LON', flag: '🇬🇧' },
+    { code: 'AMS', labelKey: 'city.AMS', flag: '🇳🇱' },
+    { code: 'BER', labelKey: 'city.BER', flag: '🇩🇪' },
+    { code: 'PRG', labelKey: 'city.PRG', flag: '🇨🇿' },
+    { code: 'VIE', labelKey: 'city.VIE', flag: '🇦🇹' },
+    { code: 'ATH', labelKey: 'city.ATH', flag: '🇬🇷' },
+    { code: 'IST', labelKey: 'city.IST', flag: '🇹🇷' },
+    { code: 'MAD', labelKey: 'city.MAD', flag: '🇪🇸' },
+    { code: 'MIL', labelKey: 'city.MIL', flag: '🇮🇹' },
   ],
-  'აზია': [
-    { code: 'DXB', label: 'დუბაი', region: 'აზია', flag: '🇦🇪' },
-    { code: 'BKK', label: 'ბანგკოკი', region: 'აზია', flag: '🇹🇭' },
-    { code: 'TYO', label: 'ტოკიო', region: 'აზია', flag: '🇯🇵' },
-    { code: 'SIN', label: 'სინგაპური', region: 'აზია', flag: '🇸🇬' },
-    { code: 'HKG', label: 'ჰონგ კონგი', region: 'აზია', flag: '🇭🇰' },
-    { code: 'DEL', label: 'დელი', region: 'აზია', flag: '🇮🇳' },
-    { code: 'TLV', label: 'თელ-ავივი', region: 'აზია', flag: '🇮🇱' },
+  'asia': [
+    { code: 'DXB', labelKey: 'city.DXB', flag: '🇦🇪' },
+    { code: 'BKK', labelKey: 'city.BKK', flag: '🇹🇭' },
+    { code: 'TYO', labelKey: 'city.TYO', flag: '🇯🇵' },
+    { code: 'SIN', labelKey: 'city.SIN', flag: '🇸🇬' },
+    { code: 'HKG', labelKey: 'city.HKG', flag: '🇭🇰' },
+    { code: 'DEL', labelKey: 'city.DEL', flag: '🇮🇳' },
+    { code: 'TLV', labelKey: 'city.TLV', flag: '🇮🇱' },
   ],
-  'ამერიკა': [
-    { code: 'NYC', label: 'ნიუ-იორკი', region: 'ამერიკა', flag: '🇺🇸' },
-    { code: 'MIA', label: 'მაიამი', region: 'ამერიკა', flag: '🇺🇸' },
-    { code: 'CUN', label: 'კანკუნი', region: 'ამერიკა', flag: '🇲🇽' },
+  'america': [
+    { code: 'NYC', labelKey: 'city.NYC', flag: '🇺🇸' },
+    { code: 'MIA', labelKey: 'city.MIA', flag: '🇺🇸' },
+    { code: 'CUN', labelKey: 'city.CUN', flag: '🇲🇽' },
   ],
-  'აფრიკა': [
-    { code: 'CAI', label: 'კაირო', region: 'აფრიკა', flag: '🇪🇬' },
-    { code: 'MRK', label: 'მარაკეში', region: 'აფრიკა', flag: '🇲🇦' },
+  'africa': [
+    { code: 'CAI', labelKey: 'city.CAI', flag: '🇪🇬' },
+    { code: 'MRK', labelKey: 'city.MRK', flag: '🇲🇦' },
   ],
-  'საქართველო': [
-    { code: 'TBS', label: 'თბილისი', region: 'საქართველო', flag: '🇬🇪' },
-    { code: 'KUT', label: 'ქუთაისი', region: 'საქართველო', flag: '🇬🇪' },
-    { code: 'BUS', label: 'ბათუმი', region: 'საქართველო', flag: '🇬🇪' },
+  'georgia': [
+    { code: 'TBS', labelKey: 'city.TBS', flag: '🇬🇪' },
+    { code: 'KUT', labelKey: 'city.KUT', flag: '🇬🇪' },
+    { code: 'BUS', labelKey: 'city.BUS', flag: '🇬🇪' },
   ],
 };
 
-const allCities = Object.values(cityData).flat();
+const allCities = Object.values(cityDataByRegion).flat();
 
-const categoryTags: Record<string, { label: string; color: string }> = {
-  tour: { label: 'ტური', color: 'bg-blue-500' },
-  ticket: { label: 'ბილეთი', color: 'bg-purple-500' },
-  hotel: { label: 'სასტუმრო', color: 'bg-emerald-500' },
-  transfer: { label: 'ტრანსფერი', color: 'bg-amber-500' },
-  flight: { label: 'ფრენა', color: 'bg-sky-500' },
-  car: { label: 'მანქანა', color: 'bg-orange-500' },
-  esim: { label: 'eSIM', color: 'bg-cyan-500' },
-  insurance: { label: 'დაზღვევა', color: 'bg-rose-500' },
+const categoryTagKeys: Record<string, { key: string; color: string }> = {
+  tour: { key: 'cat.tour', color: 'bg-blue-500' },
+  ticket: { key: 'cat.ticket', color: 'bg-purple-500' },
+  hotel: { key: 'cat.hotel', color: 'bg-emerald-500' },
+  transfer: { key: 'cat.transfer', color: 'bg-amber-500' },
+  flight: { key: 'cat.flight', color: 'bg-sky-500' },
+  car: { key: 'cat.car', color: 'bg-orange-500' },
+  esim: { key: 'cat.esim', color: 'bg-cyan-500' },
+  insurance: { key: 'cat.insurance', color: 'bg-rose-500' },
 };
 
 function generateRating() {
@@ -124,10 +125,11 @@ function getStarRating(price: number): number {
 }
 
 export default function DiscoverSection() {
-  const [selectedRegion, setSelectedRegion] = useState('ყველა');
+  const { t, lang } = useLang();
+  const [selectedRegion, setSelectedRegion] = useState('all');
   const [selectedCity, setSelectedCity] = useState('PAR');
   const [hotelCity, setHotelCity] = useState('PAR');
-  const [hotelRegion, setHotelRegion] = useState('ყველა');
+  const [hotelRegion, setHotelRegion] = useState('all');
   const [independentHotelFilter, setIndependentHotelFilter] = useState(false);
   
   const [tickets, setTickets] = useState<ServiceItem[]>([]);
@@ -140,40 +142,41 @@ export default function DiscoverSection() {
   
   const TICKETS_PER_PAGE = 10;
 
-  const availableCities = selectedRegion === 'ყველა' 
+  const availableCities = selectedRegion === 'all' 
     ? allCities 
-    : (cityData[selectedRegion] || []);
+    : (cityDataByRegion[selectedRegion] || []);
 
-  const hotelCities = hotelRegion === 'ყველა'
+  const hotelCities = hotelRegion === 'all'
     ? allCities
-    : (cityData[hotelRegion] || []);
+    : (cityDataByRegion[hotelRegion] || []);
 
-  const currentCityLabel = allCities.find(c => c.code === selectedCity)?.label || selectedCity;
-  const currentHotelCityLabel = allCities.find(c => c.code === hotelCity)?.label || hotelCity;
+  const getCityLabel = (code: string) => t(`city.${code}`) || code;
+  const currentCityLabel = getCityLabel(selectedCity);
+  const currentHotelCityLabel = getCityLabel(hotelCity);
 
   const fetchTickets = useCallback(async (city: string) => {
     setLoadingTickets(true);
     try {
-      const res = await fetch(`/api/services?destination=${city}&category=ticket,tour`);
+      const res = await fetch(`/api/services?destination=${city}&category=ticket,tour&lang=${lang}`);
       const data = await res.json();
       setTickets(data.data || []);
     } catch {
       setTickets([]);
     }
     setLoadingTickets(false);
-  }, []);
+  }, [lang]);
 
   const fetchHotels = useCallback(async (city: string) => {
     setLoadingHotels(true);
     try {
-      const res = await fetch(`/api/services?destination=${city}&category=hotel`);
+      const res = await fetch(`/api/services?destination=${city}&category=hotel&lang=${lang}`);
       const data = await res.json();
       setHotels(data.data || []);
     } catch {
       setHotels([]);
     }
     setLoadingHotels(false);
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     fetchTickets(selectedCity);
@@ -191,7 +194,7 @@ export default function DiscoverSection() {
 
   // Reset city when region changes
   useEffect(() => {
-    const cities = selectedRegion === 'ყველა' ? allCities : (cityData[selectedRegion] || []);
+    const cities = selectedRegion === 'all' ? allCities : (cityDataByRegion[selectedRegion] || []);
     if (cities.length > 0 && !cities.find(c => c.code === selectedCity)) {
       setSelectedCity(cities[0].code);
     }
@@ -199,7 +202,7 @@ export default function DiscoverSection() {
 
   useEffect(() => {
     if (independentHotelFilter) {
-      const cities = hotelRegion === 'ყველა' ? allCities : (cityData[hotelRegion] || []);
+      const cities = hotelRegion === 'all' ? allCities : (cityDataByRegion[hotelRegion] || []);
       if (cities.length > 0 && !cities.find(c => c.code === hotelCity)) {
         setHotelCity(cities[0].code);
       }
@@ -222,10 +225,10 @@ export default function DiscoverSection() {
             </div>
             <div>
               <h2 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tight">
-                ბილეთები & ატრაქციონები — {currentCityLabel}
+                {t('tickets.title')} — {currentCityLabel}
               </h2>
               <p className="text-slate-500 text-sm mt-1">
-                მუზეუმები, ტურები და ატრაქციონები — შეიძინე წინასწარ ონლაინ
+                {t('tickets.subtitle')}
               </p>
             </div>
           </div>
@@ -233,7 +236,7 @@ export default function DiscoverSection() {
             href={`/tickets?destination=${selectedCity}`}
             className="shrink-0 border border-slate-300 hover:border-slate-400 text-slate-600 hover:text-slate-800 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2"
           >
-            ყველა ბილეთი <ChevronRight size={16} />
+            {t('nav.tickets')} <ChevronRight size={16} />
           </Link>
         </div>
 
@@ -242,7 +245,7 @@ export default function DiscoverSection() {
           {/* Region tabs */}
           <div className="flex items-center gap-2 flex-wrap">
             <Filter size={16} className="text-slate-500" />
-            {regions.map(r => (
+            {regionKeys.map(r => (
               <button
                 key={r.id}
                 onClick={() => { setSelectedRegion(r.id); setTicketPage(0); }}
@@ -252,7 +255,7 @@ export default function DiscoverSection() {
                     : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100 border border-transparent'
                 }`}
               >
-                {r.label}
+                {t(r.key)}
               </button>
             ))}
           </div>
@@ -270,7 +273,7 @@ export default function DiscoverSection() {
                 }`}
               >
                 <span>{city.flag}</span>
-                {city.label}
+                {t(city.labelKey)}
               </button>
             ))}
           </div>
@@ -280,12 +283,12 @@ export default function DiscoverSection() {
         {loadingTickets ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="animate-spin text-purple-500" size={32} />
-            <span className="ml-3 text-slate-500">იტვირთება...</span>
+            <span className="ml-3 text-slate-500">{t('discover.loading')}</span>
           </div>
         ) : visibleTickets.length === 0 ? (
           <div className="text-center py-16 text-slate-500">
             <Ticket size={40} className="mx-auto mb-3 opacity-30" />
-            <p>ამ ქალაქში ბილეთები ჯერ არ არის დამატებული</p>
+            <p>{t('discover.noResults')}</p>
           </div>
         ) : (
           <>
@@ -293,7 +296,7 @@ export default function DiscoverSection() {
               {visibleTickets.map((item, i) => {
                 const rating = generateRating();
                 const reviews = generateReviews();
-                const tag = categoryTags[item.category] || categoryTags.ticket;
+                const tag = categoryTagKeys[item.category] || categoryTagKeys.ticket;
                 const hasDiscount = Math.random() > 0.5;
                 const discountPct = Math.floor(Math.random() * 40 + 10);
                 const imgSrc = item.image_url || getFallbackImage(item.category, i);
@@ -313,7 +316,7 @@ export default function DiscoverSection() {
                       />
                       {/* Category tag */}
                       <div className={`absolute top-3 left-3 ${tag.color} text-white text-[10px] font-bold px-2.5 py-1 rounded-md`}>
-                        {tag.label}
+                        {t(tag.key)}
                       </div>
                       {/* Discount badge */}
                       {hasDiscount && (
@@ -343,7 +346,7 @@ export default function DiscoverSection() {
                       </p>
                       <div className="mt-auto flex items-center justify-between">
                         <div>
-                          <span className="text-xs text-slate-400">ფასი</span>
+                          <span className="text-xs text-slate-400">{t('common.price')}</span>
                           <p className="text-lg font-black text-emerald-600">
                             €{Number(item.price).toFixed(0)}
                             {hasDiscount && (
@@ -409,10 +412,10 @@ export default function DiscoverSection() {
             </div>
             <div>
               <h2 className="text-2xl md:text-3xl font-black text-slate-800 uppercase tracking-tight">
-                სასტუმროები — {currentHotelCityLabel}
+                {t('nav.hotels')} — {currentHotelCityLabel}
               </h2>
               <p className="text-slate-500 text-sm mt-1">
-                საუკეთესო ლოკაციები, ექსკლუზიური ფასები
+                {t('hotels.subtitle')}
               </p>
             </div>
           </div>
@@ -427,13 +430,13 @@ export default function DiscoverSection() {
               }`}
             >
               <Filter size={12} className="inline mr-1" />
-              {independentHotelFilter ? 'ცალკე ფილტრი ✓' : 'ცალკე ფილტრი'}
+              {independentHotelFilter ? '✓ Filter' : 'Filter'}
             </button>
             <Link 
               href={`/hotels?destination=${hotelCity}`}
               className="shrink-0 border border-slate-300 hover:border-slate-400 text-slate-600 hover:text-slate-800 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2"
             >
-              ყველა სასტუმრო <ChevronRight size={16} />
+              {t('nav.hotels')} <ChevronRight size={16} />
             </Link>
           </div>
         </div>
@@ -443,7 +446,7 @@ export default function DiscoverSection() {
           <div className="mb-6 space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
               <Globe size={16} className="text-slate-500" />
-              {regions.map(r => (
+              {regionKeys.map(r => (
                 <button
                   key={r.id}
                   onClick={() => setHotelRegion(r.id)}
@@ -453,7 +456,7 @@ export default function DiscoverSection() {
                       : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100 border border-transparent'
                   }`}
                 >
-                  {r.label}
+                  {t(r.key)}
                 </button>
               ))}
             </div>
@@ -469,7 +472,7 @@ export default function DiscoverSection() {
                   }`}
                 >
                   <span>{city.flag}</span>
-                  {city.label}
+                  {t(city.labelKey)}
                 </button>
               ))}
             </div>
@@ -480,12 +483,12 @@ export default function DiscoverSection() {
         {loadingHotels ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="animate-spin text-emerald-600" size={32} />
-            <span className="ml-3 text-slate-400">იტვირთება...</span>
+            <span className="ml-3 text-slate-400">{t('discover.loading')}</span>
           </div>
         ) : hotels.length === 0 ? (
           <div className="text-center py-16 text-slate-500">
             <Hotel size={40} className="mx-auto mb-3 opacity-30" />
-            <p>ამ ქალაქში სასტუმროები ჯერ არ არის დამატებული</p>
+            <p>{t('discover.noResults')}</p>
           </div>
         ) : (
           <div className="relative">
@@ -554,7 +557,7 @@ export default function DiscoverSection() {
                           <div>
                             <p className="text-emerald-600 text-lg font-black">
                               €{Number(hotel.price).toFixed(0)}
-                              <span className="text-slate-400 text-[11px] font-normal ml-1">/ღამე</span>
+                              <span className="text-slate-400 text-[11px] font-normal ml-1">/{lang === 'ka' ? 'ღამე' : 'night'}</span>
                             </p>
                           </div>
                           <div className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-emerald-500 group-hover:text-emerald-500 transition-colors text-slate-400">

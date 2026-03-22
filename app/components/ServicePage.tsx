@@ -13,6 +13,7 @@ import {
   type TravelService,
 } from '@/app/lib/travel';
 import Footer from './Footer';
+import { useLang } from '@/app/lib/i18n';
 
 type IconComponent = ComponentType<{ size?: number; className?: string }>;
 
@@ -61,8 +62,16 @@ export default function ServicePage({
   const [loading, setLoading] = useState(true);
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const { t, lang } = useLang();
 
   const regions = Array.from(new Set(DESTINATION_PRESETS.map((d) => d.region)));
+  const regionLabelMap: Record<string, string> = {
+    'ევროპა': t('region.europe'),
+    'აზია': t('region.asia'),
+    'ამერიკა': t('region.america'),
+    'აფრიკა': t('region.africa'),
+    'საქართველო': t('region.georgia'),
+  };
   const filteredPresets = activeRegion
     ? DESTINATION_PRESETS.filter((d) => d.region === activeRegion)
     : DESTINATION_PRESETS;
@@ -73,7 +82,7 @@ export default function ServicePage({
 
       try {
         const res = await fetch(
-          `/api/services?destination=${destination}${category ? `&category=${category}` : ''}`,
+          `/api/services?destination=${destination}${category ? `&category=${category}` : ''}&lang=${lang}`,
         );
         const data = await res.json();
         setServices(data.data || []);
@@ -86,7 +95,7 @@ export default function ServicePage({
     }
 
     fetchData();
-  }, [category, destination]);
+  }, [category, destination, lang]);
 
   const displayedServices = activeCategory
     ? services.filter(s => s.category === activeCategory)
@@ -108,7 +117,7 @@ export default function ServicePage({
 
           <div className="flex flex-col gap-3">
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">
-              რეგიონი
+              {lang === 'ka' ? 'რეგიონი' : 'Region'}
             </span>
             <div className="flex flex-wrap gap-2 mb-2">
               <button
@@ -120,7 +129,7 @@ export default function ServicePage({
                     : 'bg-white border border-slate-200 text-slate-500 hover:border-emerald-400'
                 }`}
               >
-                ყველა
+                {t('discover.all')}
               </button>
               {regions.map((region) => (
                 <button
@@ -133,12 +142,12 @@ export default function ServicePage({
                       : 'bg-white border border-slate-200 text-slate-500 hover:border-emerald-400'
                   }`}
                 >
-                  {region}
+                  {regionLabelMap[region] || region}
                 </button>
               ))}
             </div>
             <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">
-              მიმართულება
+              {lang === 'ka' ? 'მიმართულება' : 'Destination'}
             </span>
             <div className="flex flex-wrap gap-2">
               {filteredPresets.map((item) => {
@@ -154,7 +163,7 @@ export default function ServicePage({
                     }`}
                   >
                     <img src={getCountryFlag(item.code, 'w20')} alt="" className="w-5 h-3.5 rounded-sm object-cover" />
-                    {item.label}
+                    {lang === 'en' ? (t(`city.${item.code}`) || item.label) : item.label}
                   </Link>
                 );
               })}
@@ -165,7 +174,7 @@ export default function ServicePage({
         {/* Category filter (tickets vs tours) */}
         {categoryFilter && category && category.includes(',') && (
           <div className="flex items-center gap-3 mt-4">
-            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">ტიპი</span>
+            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">{lang === 'ka' ? 'ტიპი' : 'Type'}</span>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -174,17 +183,17 @@ export default function ServicePage({
                   activeCategory === null ? 'bg-emerald-500 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-emerald-400'
                 }`}
               >
-                ყველა
+                {t('discover.all')}
               </button>
               {category.split(',').map(cat => {
                 const catLabels: Record<string, string> = {
-                  ticket: 'ბილეთები',
-                  tour: 'ტურები',
-                  hotel: 'სასტუმროები',
-                  transfer: 'ტრანსფერი',
-                  car: 'ავტომობილი',
-                  esim: 'eSIM',
-                  insurance: 'დაზღვევა',
+                  ticket: t('cat.ticket'),
+                  tour: t('cat.tour'),
+                  hotel: t('cat.hotel'),
+                  transfer: t('cat.transfer'),
+                  car: t('cat.car'),
+                  esim: t('cat.esim'),
+                  insurance: t('cat.insurance'),
                 };
                 return (
                   <button
@@ -205,12 +214,12 @@ export default function ServicePage({
 
         <div className="flex items-center justify-between mt-4">
           <p className="text-sm text-slate-500">
-            აქტიური კატალოგი: <span className="text-slate-700 font-semibold">{getDestinationLabel(destination)}</span>{' '}
+            {lang === 'ka' ? 'აქტიური კატალოგი' : 'Active catalog'}: <span className="text-slate-700 font-semibold">{lang === 'en' ? (t(`city.${destination}`) || getDestinationLabel(destination)) : getDestinationLabel(destination)}</span>{' '}
             ({destination})
           </p>
           {!loading && displayedServices.length > 0 && (
             <p className="text-sm text-slate-500">
-              ნაპოვნია: <span className="text-emerald-600 font-bold">{displayedServices.length}</span> შეთავაზება
+              {lang === 'ka' ? 'ნაპოვნია' : 'Found'}: <span className="text-emerald-600 font-bold">{displayedServices.length}</span> {lang === 'ka' ? 'შეთავაზება' : 'offers'}
             </p>
           )}
         </div>
@@ -220,7 +229,7 @@ export default function ServicePage({
         {loading ? (
           <div className="flex flex-col items-center justify-center p-20 text-slate-500 gap-4">
             <Loader2 size={40} className="animate-spin text-emerald-500" />
-            <p>მონაცემების ჩატვირთვა კატალოგიდან...</p>
+            <p>{lang === 'ka' ? 'მონაცემების ჩატვირთვა კატალოგიდან...' : 'Loading catalog data...'}</p>
           </div>
         ) : displayedServices.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -257,7 +266,7 @@ export default function ServicePage({
                       </div>
                       {service.price > 0 && service.price < 50 && (
                         <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1">
-                          <TrendingDown size={10} /> იაფი
+                          <TrendingDown size={10} /> {lang === 'ka' ? 'იაფი' : 'Deal'}
                         </div>
                       )}
                     </Link>
@@ -279,7 +288,7 @@ export default function ServicePage({
                     </div>
                     {service.price > 0 && service.price < 50 && (
                       <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg flex items-center gap-1">
-                        <TrendingDown size={10} /> იაფი
+                        <TrendingDown size={10} /> {lang === 'ka' ? 'იაფი' : 'Deal'}
                       </div>
                     )}
                   </div>
@@ -305,7 +314,7 @@ export default function ServicePage({
                     <p className="text-sm text-slate-500 mb-1 flex items-center gap-1">
                       <MapPin size={12} className="text-emerald-500" />
                       <img src={getCountryFlag(service.destination, 'w20')} alt="" className="w-4 h-3 rounded-sm" />
-                      {getDestinationLabel(service.destination)}
+                      {lang === 'en' ? (t(`city.${service.destination}`) || getDestinationLabel(service.destination)) : getDestinationLabel(service.destination)}
                     </p>
                     <p className="text-sm text-slate-500 mb-6 flex-1 line-clamp-3 leading-relaxed">
                       {service.description}
@@ -314,7 +323,7 @@ export default function ServicePage({
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-200">
                       <div className="flex flex-col">
                         <span className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">
-                          საწყისი ფასი
+                          {lang === 'ka' ? 'საწყისი ფასი' : 'Starting from'}
                         </span>
                         <span className="text-xl font-black text-emerald-600">
                           {service.currency || 'EUR'} {service.price}
@@ -325,7 +334,7 @@ export default function ServicePage({
                           href={detailHref}
                           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors"
                         >
-                          ვრცლად <ExternalLink size={14} />
+                          {t('discover.details')} <ExternalLink size={14} />
                         </Link>
                       ) : (
                         <a
@@ -334,7 +343,7 @@ export default function ServicePage({
                           rel="noopener noreferrer"
                           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition-colors"
                         >
-                          ნახვა <ExternalLink size={14} />
+                          {lang === 'ka' ? 'ნახვა' : 'View'} <ExternalLink size={14} />
                         </a>
                       )}
                     </div>
@@ -346,10 +355,9 @@ export default function ServicePage({
         ) : (
           <div className="bg-slate-50 border border-slate-200 rounded-3xl p-12 text-center text-slate-500 flex flex-col items-center">
             <Icon size={48} className="mb-4 opacity-20" />
-            <h3 className="text-xl font-bold text-slate-600 mb-2">მონაცემები ვერ მოიძებნა</h3>
+            <h3 className="text-xl font-bold text-slate-600 mb-2">{t('discover.noResults')}</h3>
             <p>
-              ამ მიმართულებისთვის ჯერ სინქრონიზებული ჩანაწერები არ არის. სცადე სხვა მიმართულება ან გააშვი
-              sync route.
+              {t('discover.tryOther')}
             </p>
           </div>
         )}

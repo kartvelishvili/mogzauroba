@@ -21,11 +21,13 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import type { ExploreResponse, TravelService } from '@/app/lib/travel';
 import { getDestinationLabel } from '@/app/lib/travel';
+import { useLang } from '@/app/lib/i18n';
 import Footer from '../components/Footer';
 
 type IconComponent = ComponentType<{ size?: number; className?: string }>;
 
 export default function ExplorePageClient() {
+  const { t, lang } = useLang();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -71,7 +73,7 @@ export default function ExplorePageClient() {
       const apiResp = (await res.json()) as ExploreResponse;
 
       if (!apiResp.success) {
-        setErrorMessage(apiResp.error || 'ძებნა დროებით ვერ შესრულდა.');
+        setErrorMessage(apiResp.error || t('explore.searchError'));
         return;
       }
 
@@ -81,7 +83,7 @@ export default function ExplorePageClient() {
       setTours(apiResp.data.tours || []);
       setExtras(apiResp.data.extras || []);
     } catch {
-      setErrorMessage('კავშირის შეცდომა. სცადე თავიდან.');
+      setErrorMessage(t('explore.connectionError'));
     } finally {
       setLoading(false);
     }
@@ -104,7 +106,7 @@ export default function ExplorePageClient() {
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     if (!destination) {
-      setErrorMessage('გთხოვ, მიუთითე მიმართულება.');
+      setErrorMessage(t('explore.noDestination'));
       return;
     }
     // Update URL
@@ -126,7 +128,7 @@ export default function ExplorePageClient() {
   ].reduce<number>((sum, current) => sum + Number(current || 0), 0);
 
   const destinationCode = destination.trim().toUpperCase();
-  const destinationLabel = destinationCode ? getDestinationLabel(destinationCode) : 'არჩეული არ არის';
+  const destinationLabel = destinationCode ? getDestinationLabel(destinationCode) : t('explore.notSelected');
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -137,8 +139,8 @@ export default function ExplorePageClient() {
             <Search size={28} className="text-emerald-600" />
           </div>
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">ჭკვიანი პაკეტის ძიება</h1>
-            <p className="text-slate-500 mt-1">აირჩიე ფრენა, სასტუმრო, ტრანსფერი და ტური ერთიან პაკეტში</p>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">{t('explore.title')}</h1>
+            <p className="text-slate-500 mt-1">{t('explore.subtitle')}</p>
           </div>
         </div>
 
@@ -151,7 +153,7 @@ export default function ExplorePageClient() {
                 type="text"
                 value={origin}
                 onChange={(e) => setOrigin(e.target.value.toUpperCase())}
-                placeholder="საიდან (მაგ: TBS)"
+                placeholder={t('explore.fromPlaceholder')}
                 className="w-full bg-transparent text-slate-800 uppercase font-bold py-3 px-3 focus:outline-none placeholder-slate-400"
               />
             </div>
@@ -164,7 +166,7 @@ export default function ExplorePageClient() {
                 type="text"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value.toUpperCase())}
-                placeholder="სად (მაგ: PAR, ROM, DXB)"
+                placeholder={t('explore.toPlaceholder')}
                 className="w-full bg-transparent text-slate-800 uppercase font-bold py-3 px-3 focus:outline-none placeholder-slate-400"
               />
             </div>
@@ -186,7 +188,7 @@ export default function ExplorePageClient() {
               className="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 px-10 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-70 text-lg shadow-md shadow-emerald-500/20"
             >
               {loading ? <Loader2 className="animate-spin" size={24} /> : <Search size={24} />}
-              ძიება
+              {t('explore.search')}
             </button>
           </form>
 
@@ -207,8 +209,8 @@ export default function ExplorePageClient() {
                   <SectionHeader
                     icon={Plane}
                     iconClassName="bg-blue-50 text-blue-600 border-blue-200"
-                    title={`ფრენები: ${destinationCode || '-'}`}
-                    subtitle={date ? `გამგზავრება ${date}` : 'უახლოესი ხელმისაწვდომი ვარიანტები'}
+                    title={`${t('explore.flights')}: ${destinationCode || '-'}`}
+                    subtitle={date ? `${t('explore.departure')} ${date}` : t('explore.latestAvailable')}
                   />
 
                   {loading ? (
@@ -217,10 +219,10 @@ export default function ExplorePageClient() {
                     <div className="flex flex-col gap-4">
                       {flights.map((flight) => {
                         const f = flight as any;
-                        const airlineName = f.airlineName || flight.airline || 'ავიაკომპანია';
+                        const airlineName = f.airlineName || flight.airline || t('explore.airline');
                         const logoUrl = f.logoUrl;
                         const durationStr = f.durationToFormatted || '';
-                        const isDirect = f.isDirect ?? (flight.description?.includes('პირდაპირი'));
+                        const isDirect = f.isDirect ?? (flight.description?.includes('პირდაპირი') || flight.description?.includes('Direct'));
                         const isRoundTrip = f.isRoundTrip || false;
                         const transfers = f.transfers ?? 0;
                         const originAirport = f.originAirport || flight.origin || origin;
@@ -281,7 +283,7 @@ export default function ExplorePageClient() {
                                         ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
                                         : 'bg-amber-50 text-amber-600 border border-amber-200'
                                     }`}>
-                                      {isDirect ? 'პირდაპირი' : `${transfers} გადაჯდ.`}
+                                      {isDirect ? t('explore.direct') : `${transfers} ${t('explore.transfer')}`}
                                     </span>
                                     <div className="h-px flex-1 bg-slate-200" />
                                     <ArrowRight size={12} className="text-slate-300" />
@@ -289,7 +291,7 @@ export default function ExplorePageClient() {
                                   {isRoundTrip && (
                                     <span className="text-[10px] text-blue-400 flex items-center gap-1">
                                       <ArrowLeftRight size={9} />
-                                      ორმხრივი
+                                      {t('explore.roundTrip')}
                                     </span>
                                   )}
                                 </div>
@@ -302,7 +304,7 @@ export default function ExplorePageClient() {
                               <div className="flex items-center gap-4 shrink-0">
                                 <div className="text-right">
                                   <span className="text-xs text-slate-400 font-semibold">
-                                    {isRoundTrip ? 'ორივე მიმართ.' : 'ერთი მიმართ.'}
+                                    {isRoundTrip ? t('explore.bothWays') : t('explore.oneWay')}
                                   </span>
                                   <p className="text-2xl font-black text-slate-800">€{flight.price}</p>
                                 </div>
@@ -317,7 +319,7 @@ export default function ExplorePageClient() {
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
                                   }`}
                                 >
-                                  {selectedFlight?.id === flight.id ? 'დამატებულია' : 'არჩევა'}
+                                  {selectedFlight?.id === flight.id ? t('explore.added') : t('explore.select')}
                                 </button>
                               </div>
                             </div>
@@ -326,7 +328,7 @@ export default function ExplorePageClient() {
                       })}
                     </div>
                   ) : (
-                    <EmptyState text="ამ პირობებზე ფრენები ვერ მოიძებნა. სცადე სხვა თარიღი ან სხვა მიმართულება." />
+                    <EmptyState text={t('explore.noFlights')} />
                   )}
                 </section>
 
@@ -335,7 +337,7 @@ export default function ExplorePageClient() {
                   <SectionHeader
                     icon={Hotel}
                     iconClassName="bg-emerald-50 text-emerald-600 border-emerald-200"
-                    title={`განთავსება ${destinationLabel}-ში`}
+                    title={`${t('explore.accommodation')} ${destinationLabel}${t('explore.inCity')}`}
                   />
 
                   {loading ? (
@@ -373,7 +375,7 @@ export default function ExplorePageClient() {
                             <p className="text-sm text-slate-500 mb-4">{hotel.description}</p>
                             <div className="mt-auto flex justify-between items-center pt-4 border-t border-slate-200">
                               <div>
-                                <span className="text-xs text-slate-400 block mb-1">ორიენტირი ფასი</span>
+                                <span className="text-xs text-slate-400 block mb-1">{t('explore.orientPrice')}</span>
                                 <span className="text-2xl font-black text-emerald-600">EUR {hotel.price}</span>
                               </div>
                               <button
@@ -387,7 +389,7 @@ export default function ExplorePageClient() {
                                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
                                 }`}
                               >
-                                არჩევა
+                                {t('explore.select')}
                               </button>
                             </div>
                           </div>
@@ -404,7 +406,7 @@ export default function ExplorePageClient() {
                       <SectionHeader
                         icon={Car}
                         iconClassName="bg-amber-50 text-amber-600 border-amber-200"
-                        title="ტრანსფერი და მანქანა"
+                        title={t('explore.transferAndCar')}
                       />
                       <div className="flex flex-col gap-4">
                         {transfers.map((transfer) => (
@@ -425,7 +427,7 @@ export default function ExplorePageClient() {
                       <SectionHeader
                         icon={Ticket}
                         iconClassName="bg-purple-50 text-purple-600 border-purple-200"
-                        title="ტურები"
+                        title={t('explore.tours')}
                       />
                       <div className="flex flex-col gap-4">
                         {tours.map((tour) => (
@@ -448,9 +450,9 @@ export default function ExplorePageClient() {
               {/* Cart Sidebar */}
               <div className="xl:col-span-4 relative">
                 <div className="sticky top-24 bg-white backdrop-blur-xl border border-slate-200 rounded-3xl p-6 md:p-8 shadow-lg flex flex-col h-fit">
-                  <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">შენი პაკეტი</h3>
+                  <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">{t('explore.yourPackage')}</h3>
                   <p className="text-sm text-slate-500 mb-8 border-b border-slate-200 pb-4">
-                    მიმართულება: <strong className="text-slate-800">{destinationLabel}</strong>
+                    {t('explore.destination')} <strong className="text-slate-800">{destinationLabel}</strong>
                   </p>
 
                   <div className="flex flex-col gap-5 mb-8 flex-1">
@@ -464,7 +466,7 @@ export default function ExplorePageClient() {
                         link={selectedFlight.external_link}
                       />
                     ) : (
-                      <EmptyCartItem icon={Plane} title="აირჩიე ავიაბილეთი" />
+                      <EmptyCartItem icon={Plane} title={t('explore.chooseFlight')} />
                     )}
 
                     {selectedHotel ? (
@@ -477,7 +479,7 @@ export default function ExplorePageClient() {
                         link={selectedHotel.external_link}
                       />
                     ) : (
-                      <EmptyCartItem icon={Hotel} title="აირჩიე სასტუმრო" />
+                      <EmptyCartItem icon={Hotel} title={t('explore.chooseHotel')} />
                     )}
 
                     {selectedTransfer ? (
@@ -490,7 +492,7 @@ export default function ExplorePageClient() {
                         link={selectedTransfer.external_link}
                       />
                     ) : (
-                      <EmptyCartItem icon={Car} title="დაამატე ტრანსფერი ან მანქანა" />
+                      <EmptyCartItem icon={Car} title={t('explore.addTransfer')} />
                     )}
 
                     {selectedTour ? (
@@ -503,7 +505,7 @@ export default function ExplorePageClient() {
                         link={selectedTour.external_link}
                       />
                     ) : (
-                      <EmptyCartItem icon={Ticket} title="დაამატე ტური" />
+                      <EmptyCartItem icon={Ticket} title={t('explore.addTour')} />
                     )}
 
                     {extras.length > 0 && selectedExtra ? (
@@ -521,13 +523,13 @@ export default function ExplorePageClient() {
                         onClick={() => setSelectedExtra(extras[0])}
                         className="text-xs text-sky-600 cursor-pointer hover:underline text-center mt-2 font-medium"
                       >
-                        + დაამატე eSIM ან დაზღვევა
+                        {t('explore.addEsim')}
                       </button>
                     ) : null}
                   </div>
 
                   <div className="bg-slate-50 rounded-2xl p-5 flex justify-between items-center mb-6 border border-slate-200">
-                    <span className="text-slate-500 font-bold uppercase text-xs tracking-wider">სულ ჯამი:</span>
+                    <span className="text-slate-500 font-bold uppercase text-xs tracking-wider">{t('explore.total')}</span>
                     <span className="text-4xl font-black text-emerald-600">
                       EUR {total}
                     </span>
@@ -548,7 +550,7 @@ export default function ExplorePageClient() {
                       className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-4 px-6 rounded-2xl transition-all flex justify-center items-center gap-2 shadow-md"
                     >
                       <ShieldCheck size={20} />
-                      პარტნიორ ლინკზე გადასვლა
+                      {t('explore.goToPartner')}
                     </a>
                   ) : (
                     <button
@@ -556,7 +558,7 @@ export default function ExplorePageClient() {
                       className="w-full bg-slate-100 text-slate-400 font-black py-4 px-6 rounded-2xl flex justify-center items-center gap-2"
                     >
                       <ShieldCheck size={20} />
-                      აირჩიე სერვისები
+                      {t('explore.chooseServices')}
                     </button>
                   )}
                 </div>

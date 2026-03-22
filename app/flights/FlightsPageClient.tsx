@@ -17,6 +17,7 @@ import {
   type TravelService,
 } from '@/app/lib/travel';
 import Footer from '../components/Footer';
+import { useLang } from '@/app/lib/i18n';
 
 interface FlightResult {
   id: string;
@@ -55,14 +56,6 @@ interface FlightStats {
 
 type SortOption = 'price' | 'duration' | 'transfers';
 
-function formatDate(dateStr: string): string {
-  if (!dateStr) return '';
-  const d = new Date(dateStr);
-  const months = ['იან', 'თებ', 'მარ', 'აპრ', 'მაი', 'ივნ', 'ივლ', 'აგვ', 'სექ', 'ოქტ', 'ნოე', 'დეკ'];
-  const days = ['კვი', 'ორშ', 'სამ', 'ოთხ', 'ხუთ', 'პარ', 'შაბ'];
-  return `${d.getDate()} ${months[d.getMonth()]}, ${days[d.getDay()]}`;
-}
-
 function formatTime(dateStr: string): string {
   if (!dateStr) return '';
   const d = new Date(dateStr);
@@ -71,6 +64,7 @@ function formatTime(dateStr: string): string {
 
 export default function FlightsPageClient() {
   const searchParams = useSearchParams();
+  const { t, lang } = useLang();
   const destination = normalizeDestination(searchParams.get('destination'));
   const [flights, setFlights] = useState<FlightResult[]>([]);
   const [stats, setStats] = useState<FlightStats | null>(null);
@@ -82,6 +76,14 @@ export default function FlightsPageClient() {
   const [showDirectOnly, setShowDirectOnly] = useState(false);
   // Cross-sell data
   const [crossSell, setCrossSell] = useState<TravelService[]>([]);
+
+  const formatDate = (dateStr: string): string => {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    const months = [t('mon.jan'), t('mon.feb'), t('mon.mar'), t('mon.apr'), t('mon.may'), t('mon.jun'), t('mon.jul'), t('mon.aug'), t('mon.sep'), t('mon.oct'), t('mon.nov'), t('mon.dec')];
+    const days = [t('day.sun'), t('day.mon'), t('day.tue'), t('day.wed'), t('day.thu'), t('day.fri'), t('day.sat')];
+    return `${d.getDate()} ${months[d.getMonth()]}, ${days[d.getDay()]}`;
+  };
 
   const regions = Array.from(new Set(DESTINATION_PRESETS.map(d => d.region)));
   const filteredPresets = activeRegion
@@ -146,13 +148,13 @@ export default function FlightsPageClient() {
               <Plane size={32} className="text-blue-600" />
             </div>
             <div>
-              <h1 className="text-4xl font-black text-slate-800 tracking-tight">ავიაბილეთები</h1>
-              <p className="text-slate-500 mt-1">მოძებნე ყველაზე იაფი ფრენები ნებისმიერი მიმართულებით</p>
+              <h1 className="text-4xl font-black text-slate-800 tracking-tight">{t('fl.title')}</h1>
+              <p className="text-slate-500 mt-1">{t('fl.subtitle')}</p>
             </div>
           </div>
 
           <div className="flex flex-col gap-3">
-            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">რეგიონი</span>
+            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">{t('fl.region')}</span>
             <div className="flex flex-wrap gap-2 mb-2">
               <button
                 type="button"
@@ -161,7 +163,7 @@ export default function FlightsPageClient() {
                   activeRegion === null ? 'bg-blue-500 text-white' : 'bg-white border border-slate-200 text-slate-500 hover:border-blue-400'
                 }`}
               >
-                ყველა
+                {t('fl.all')}
               </button>
               {regions.map(region => (
                 <button
@@ -176,7 +178,7 @@ export default function FlightsPageClient() {
                 </button>
               ))}
             </div>
-            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">მიმართულება</span>
+            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">{t('fl.direction')}</span>
             <div className="flex flex-wrap gap-2">
               {filteredPresets.map(item => {
                 const active = item.code === destination;
@@ -189,7 +191,7 @@ export default function FlightsPageClient() {
                     }`}
                   >
                     <img src={getCountryFlag(item.code, 'w20')} alt="" className="w-5 h-3.5 rounded-sm object-cover" />
-                    {item.label}
+                    {lang === 'ka' ? item.label : (t('city.' + item.code) || item.label)}
                   </Link>
                 );
               })}
@@ -202,18 +204,18 @@ export default function FlightsPageClient() {
           <div className="flex items-center gap-2">
             <img src={flagUrl} alt="" className="w-5 h-4 rounded-sm" />
             <span className="text-sm text-slate-500">
-              ფრენები: <span className="text-slate-700 font-semibold">თბილისი → {cityLabel}</span>
+              {t('fl.flightsTo')} <span className="text-slate-700 font-semibold">{cityLabel}</span>
             </span>
             {!loading && stats && (
               <span className="text-xs text-slate-400 ml-2">
-                ({filteredFlights.length} ფრენა{stats.directCount > 0 && `, ${stats.directCount} პირდაპირი`})
+                ({filteredFlights.length} {t('fl.flightDirect').split(' / ')[0]}{stats.directCount > 0 && `, ${stats.directCount} ${t('fl.direct')}`})
               </span>
             )}
           </div>
           {!loading && stats && stats.minPrice > 0 && (
             <div className="flex items-center gap-4">
               <span className="text-sm text-slate-500">
-                ფასი: <span className="text-emerald-600 font-bold">€{stats.minPrice}</span>
+                {t('fl.price')} <span className="text-emerald-600 font-bold">€{stats.minPrice}</span>
                 {stats.minPrice !== stats.maxPrice && (
                   <> – <span className="text-slate-600 font-semibold">€{stats.maxPrice}</span></>
                 )}
@@ -228,12 +230,12 @@ export default function FlightsPageClient() {
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <div className="flex items-center gap-2">
             <SlidersHorizontal size={14} className="text-slate-500" />
-            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">სორტირება</span>
+            <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">{t('fl.sort')}</span>
           </div>
           {([
-            { key: 'price' as SortOption, label: 'ფასი', icon: ArrowDownUp },
-            { key: 'duration' as SortOption, label: 'ხანგრძლივობა', icon: Clock },
-            { key: 'transfers' as SortOption, label: 'გადაჯდომა', icon: ChevronsRight },
+            { key: 'price' as SortOption, label: t('fl.sortPrice'), icon: ArrowDownUp },
+            { key: 'duration' as SortOption, label: t('fl.sortDuration'), icon: Clock },
+            { key: 'transfers' as SortOption, label: t('fl.sortTransfers'), icon: ChevronsRight },
           ]).map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -256,7 +258,7 @@ export default function FlightsPageClient() {
             }`}
           >
             <Plane size={13} />
-            პირდაპირი ფრენა
+            {t('fl.directOnly')}
             {stats && stats.directCount > 0 && (
               <span className="opacity-70">({stats.directCount})</span>
             )}
@@ -268,7 +270,7 @@ export default function FlightsPageClient() {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-3">
               <Filter size={14} className="text-slate-500" />
-              <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">ავიაკომპანია</span>
+              <span className="text-xs font-bold tracking-[0.2em] uppercase text-slate-500">{t('fl.airline')}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               <button
@@ -278,7 +280,7 @@ export default function FlightsPageClient() {
                   selectedAirline === null ? 'bg-blue-500 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:border-blue-400'
                 }`}
               >
-                ყველა ({flights.length})
+                {t('fl.allAirlines')} ({flights.length})
               </button>
               {(showAllAirlines ? airlines : airlines.slice(0, 8)).map(code => {
                 const count = flights.filter(f => f.airline === code).length;
@@ -308,7 +310,7 @@ export default function FlightsPageClient() {
                   onClick={() => setShowAllAirlines(!showAllAirlines)}
                   className="rounded-full px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-1"
                 >
-                  {showAllAirlines ? 'ნაკლები' : `+${airlines.length - 8} სხვა`}
+                  {showAllAirlines ? t('fl.less') : `+${airlines.length - 8} ${t('fl.more')}`}
                   <ChevronDown size={14} className={`transition-transform ${showAllAirlines ? 'rotate-180' : ''}`} />
                 </button>
               )}
@@ -320,7 +322,7 @@ export default function FlightsPageClient() {
         {loading ? (
           <div className="flex flex-col items-center justify-center p-20 text-slate-500 gap-4">
             <Loader2 size={40} className="animate-spin text-blue-500" />
-            <p>ფრენების ძებნა...</p>
+            <p>{t('fl.searching')}</p>
           </div>
         ) : filteredFlights.length > 0 ? (
           <div className="space-y-4">
@@ -384,7 +386,7 @@ export default function FlightsPageClient() {
                               ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
                               : 'bg-amber-50 text-amber-600 border border-amber-200'
                           }`}>
-                            {flight.isDirect ? 'პირდაპირი' : `${flight.transfers} გადაჯდ.`}
+                            {flight.isDirect ? t('fl.direct') : `${flight.transfers} ${t('fl.transfers')}`}
                           </div>
                           <div className="h-px flex-1 bg-slate-200" />
                           <ArrowRight size={12} className="text-slate-300 shrink-0" />
@@ -428,7 +430,7 @@ export default function FlightsPageClient() {
                                 : 'bg-amber-50 text-amber-500 border border-amber-100'
                             }`}>
                               <Repeat size={8} className="inline mr-0.5" />
-                              {flight.returnTransfers === 0 ? 'პირდაპირი' : `${flight.returnTransfers} გადაჯდ.`}
+                              {flight.returnTransfers === 0 ? t('fl.direct') : `${flight.returnTransfers} ${t('fl.transfers')}`}
                             </div>
                             <div className="h-px flex-1 bg-blue-100" />
                             <ArrowRight size={10} className="text-blue-300 shrink-0" />
@@ -451,14 +453,14 @@ export default function FlightsPageClient() {
                       {flight.isRoundTrip && (
                         <p className="text-[10px] text-blue-500 font-semibold flex items-center gap-1 justify-end mb-0.5">
                           <ArrowLeftRight size={10} />
-                          ორმხრივი
+                          {t('fl.roundTrip')}
                         </p>
                       )}
                       <p className="text-2xl font-black text-emerald-600">
                         €{flight.price}
                       </p>
                       <p className="text-[10px] text-slate-400">
-                        {flight.isRoundTrip ? 'ორივე მიმართ.' : 'ერთი მიმართ.'}
+                        {flight.isRoundTrip ? t('fl.bothWays') : t('fl.oneWay')}
                       </p>
                     </div>
                     <a
@@ -467,7 +469,7 @@ export default function FlightsPageClient() {
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-3 rounded-xl text-sm font-bold transition-colors shrink-0"
                     >
-                      შეძენა <ExternalLink size={14} />
+                      {t('fl.buy')} <ExternalLink size={14} />
                     </a>
                   </div>
                 </div>
@@ -477,8 +479,8 @@ export default function FlightsPageClient() {
         ) : (
           <div className="bg-slate-50 border border-slate-200 rounded-3xl p-12 text-center text-slate-500 flex flex-col items-center">
             <Plane size={48} className="mb-4 opacity-20" />
-            <h3 className="text-xl font-bold text-slate-600 mb-2">ფრენები ვერ მოიძებნა</h3>
-            <p>ამ მიმართულებისთვის ფრენები ჯერ არ არის. სცადე სხვა მიმართულება.</p>
+            <h3 className="text-xl font-bold text-slate-600 mb-2">{t('fl.noFlights')}</h3>
+            <p>{t('fl.noFlightsDesc')}</p>
           </div>
         )}
 
@@ -489,34 +491,34 @@ export default function FlightsPageClient() {
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6">
               <h2 className="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
                 <ChevronsRight size={20} className="text-blue-600" />
-                სრული მოგზაურობა {cityLabel}-ში
+                {t('fl.fullTripTo')} {cityLabel}
               </h2>
               <p className="text-sm text-slate-500 mb-4">
-                ფრენასთან ერთად დაგეგმე სასტუმრო, ტრანსფერი, eSIM და გასართობი აქტივობები
+                {t('fl.fullTripDesc')}
               </p>
               <div className="flex flex-wrap gap-3">
                 {hotels.length > 0 && (
                   <a href="#hotels-section" className="flex items-center gap-2 bg-white border border-slate-200 hover:border-emerald-400 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors">
                     <Hotel size={16} className="text-emerald-600" />
-                    {hotels.length} სასტუმრო
+                    {hotels.length} {t('fl.hotel')}
                   </a>
                 )}
                 {transfers.length > 0 && (
                   <a href="#transfers-section" className="flex items-center gap-2 bg-white border border-slate-200 hover:border-amber-400 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors">
                     <Car size={16} className="text-amber-600" />
-                    {transfers.length} ტრანსფერი
+                    {transfers.length} {t('fl.transfer')}
                   </a>
                 )}
                 {esims.length > 0 && (
                   <a href="#esim-section" className="flex items-center gap-2 bg-white border border-slate-200 hover:border-purple-400 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors">
                     <Smartphone size={16} className="text-purple-600" />
-                    eSIM პაკეტი
+                    {t('fl.esimPackage')}
                   </a>
                 )}
                 {tickets.length > 0 && (
                   <a href="#tickets-section" className="flex items-center gap-2 bg-white border border-slate-200 hover:border-orange-400 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors">
                     <Ticket size={16} className="text-orange-600" />
-                    {tickets.length} აქტივობა
+                    {tickets.length} {t('fl.activity')}
                   </a>
                 )}
               </div>
@@ -530,10 +532,10 @@ export default function FlightsPageClient() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-bold text-slate-800 mb-1">
-                    eSIM — ინტერნეტი {cityLabel}-ში ჩამოფრენისთანავე
+                    {t('fl.esimTitle')} {cityLabel} {t('fl.esimArrival')}
                   </h3>
                   <p className="text-slate-500 text-sm">
-                    აღარ გჭირდება ადგილობრივი SIM ბარათის ყიდვა. აქტივირდება მყისიერად.
+                    {t('fl.esimDesc')}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -558,7 +560,7 @@ export default function FlightsPageClient() {
               <div id="hotels-section">
                 <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
                   <Hotel size={22} className="text-emerald-600" />
-                  სასტუმროები {cityLabel}-ში
+                  {t('fl.hotelsIn')} {cityLabel}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {hotels.map((hotel, i) => (
@@ -579,7 +581,7 @@ export default function FlightsPageClient() {
                         <h3 className="text-sm font-bold text-slate-800 line-clamp-1">{hotel.title}</h3>
                         <p className="text-emerald-600 font-black mt-2">
                           €{Number(hotel.price).toFixed(0)}
-                          <span className="text-slate-500 text-xs font-normal ml-1">/ღამე</span>
+                          <span className="text-slate-500 text-xs font-normal ml-1">{t('fl.perNight')}</span>
                         </p>
                       </div>
                     </Link>
@@ -593,7 +595,7 @@ export default function FlightsPageClient() {
               <div id="tickets-section">
                 <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
                   <Ticket size={22} className="text-orange-600" />
-                  ბილეთები & ტურები {cityLabel}-ში
+                  {t('fl.ticketsIn')} {cityLabel}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {tickets.map((item, i) => (
@@ -625,7 +627,7 @@ export default function FlightsPageClient() {
               <div id="transfers-section">
                 <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
                   <Car size={22} className="text-amber-600" />
-                  ტრანსფერი {cityLabel}-ში
+                  {t('fl.transferIn')} {cityLabel}
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {transfers.map((item, i) => (

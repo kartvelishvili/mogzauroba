@@ -3,12 +3,14 @@
 import { Suspense } from 'react';
 import ServicePage from '@/app/components/ServicePage';
 import { Map } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 function ToursContent() {
+  const { t } = useLang();
   return (
     <ServicePage 
-      title="ჯგუფური და ინდივიდუალური ტურები"
-      description="აღმოაჩინე ახალი კულტურა ექსპერტი გიდების დახმარებით."
+      title={t('tours.pageTitle')}
+      description={t('tours.pageDesc')}
       icon={Map}
       category="tour"
     />

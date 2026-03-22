@@ -3,12 +3,14 @@
 import { Suspense } from 'react';
 import ServicePage from '@/app/components/ServicePage';
 import { Car } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 function TaxiContent() {
+  const { t } = useLang();
   return (
     <ServicePage
-      title="ტაქსი და ტრანსფერი"
-      description="კომფორტული დახვედრა აეროპორტიდან და მანქანების გაქირავება (Kiwitaxi & Localrent)."
+      title={t('taxi.pageTitle')}
+      description={t('taxi.pageDesc')}
       icon={Car}
       category="transfer,car"
     />

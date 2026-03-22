@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { User, Mail, Phone, MapPin, Save, Loader2 } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { t, lang } = useLang();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,15 +24,15 @@ export default function ProfilePage() {
 
   return (
     <div className="animate-in fade-in duration-500 max-w-4xl">
-      <h1 className="text-3xl font-bold tracking-tight mb-2">პროფილის მართვა</h1>
-      <p className="text-slate-500 mb-10">განაახლე პირადი ინფორმაცია და ანგარიშის დეტალები</p>
+      <h1 className="text-3xl font-bold tracking-tight mb-2">{lang === 'ka' ? 'პროფილის მართვა' : 'Profile Management'}</h1>
+      <p className="text-slate-500 mb-10">{lang === 'ka' ? 'განაახლე პირადი ინფორმაცია და ანგარიშის დეტალები' : 'Update personal information and account details'}</p>
 
       <div className="bg-white border border-slate-200 rounded-3xl p-6 md:p-10 shadow-sm">
         <form onSubmit={handleSubmit} className="space-y-6">
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 pl-1">სახელი გვარი</label>
+              <label className="text-sm font-medium text-slate-500 pl-1">{lang === 'ka' ? 'სახელი გვარი' : 'Full Name'}</label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <User size={18} />
@@ -44,7 +46,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 pl-1">ელ-ფოსტა</label>
+              <label className="text-sm font-medium text-slate-500 pl-1">{lang === 'ka' ? 'ელ-ფოსტა' : 'Email'}</label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <Mail size={18} />
@@ -59,7 +61,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 pl-1">ტელეფონი</label>
+              <label className="text-sm font-medium text-slate-500 pl-1">{lang === 'ka' ? 'ტელეფონი' : 'Phone'}</label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <Phone size={18} />
@@ -73,7 +75,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 pl-1">ქალაქი</label>
+              <label className="text-sm font-medium text-slate-500 pl-1">{lang === 'ka' ? 'ქალაქი' : 'City'}</label>
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                   <MapPin size={18} />
@@ -89,7 +91,7 @@ export default function ProfilePage() {
 
           <div className="pt-6 border-t border-slate-200 flex items-center justify-between">
             <div>
-              {success && <span className="text-emerald-600 text-sm font-medium">პროფილი წარმატებით განახლდა!</span>}
+              {success && <span className="text-emerald-600 text-sm font-medium">{lang === 'ka' ? 'პროფილი წარმატებით განახლდა!' : 'Profile updated successfully!'}</span>}
             </div>
             <button 
               type="submit"
@@ -97,7 +99,7 @@ export default function ProfilePage() {
               className="bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 px-8 rounded-xl flex items-center gap-2 transition-colors disabled:opacity-70"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-              <span>შენახვა</span>
+              <span>{lang === 'ka' ? 'შენახვა' : 'Save'}</span>
             </button>
           </div>
           

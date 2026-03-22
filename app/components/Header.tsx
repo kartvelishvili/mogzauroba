@@ -7,25 +7,27 @@ import {
   CircleDollarSign, CloudSun, Image as ImageIcon, Compass, Menu, X, Search, Info, Globe
 } from 'lucide-react';
 import { useState } from 'react';
-
-const allNavItems = [
-  { name: 'მთავარი', path: '/', icon: Compass },
-  { name: 'ავიაბილეთები', path: '/flights', icon: Plane },
-  { name: 'სასტუმროები', path: '/hotels', icon: Hotel },
-  { name: 'ბილეთები', path: '/tickets', icon: Ticket },
-  { name: 'ტურები', path: '/tours', icon: Map },
-  { name: 'ტრანსფერი', path: '/taxi', icon: Car },
-  { name: 'ადგილები', path: '/places', icon: MapPin },
-  { name: 'ვალუტა', path: '/currency', icon: CircleDollarSign },
-  { name: 'ამინდი', path: '/weather', icon: CloudSun },
-  { name: 'გალერეა', path: '/gallery', icon: ImageIcon },
-  { name: 'რუკა', path: '/map', icon: MapPin },
-  { name: 'შესახებ', path: '/about', icon: Info },
-];
+import { useLang } from '@/app/lib/i18n';
 
 export default function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { lang, setLang, t } = useLang();
+
+  const allNavItems = [
+    { key: 'nav.home', path: '/', icon: Compass },
+    { key: 'nav.flights', path: '/flights', icon: Plane },
+    { key: 'nav.hotels', path: '/hotels', icon: Hotel },
+    { key: 'nav.tickets', path: '/tickets', icon: Ticket },
+    { key: 'nav.tours', path: '/tours', icon: Map },
+    { key: 'nav.transfer', path: '/taxi', icon: Car },
+    { key: 'nav.places', path: '/places', icon: MapPin },
+    { key: 'nav.currency', path: '/currency', icon: CircleDollarSign },
+    { key: 'nav.weather', path: '/weather', icon: CloudSun },
+    { key: 'nav.gallery', path: '/gallery', icon: ImageIcon },
+    { key: 'nav.map', path: '/map', icon: MapPin },
+    { key: 'nav.about', path: '/about', icon: Info },
+  ];
 
   if (pathname.startsWith('/dashboard')) return null;
 
@@ -50,13 +52,17 @@ export default function Header() {
 
           {/* Right — Desktop */}
           <div className="hidden xl:flex items-center gap-3">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600">
+            {/* Language Switcher */}
+            <button
+              onClick={() => setLang(lang === 'ka' ? 'en' : 'ka')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
+            >
               <Globe size={13} />
-              <span>GE 🇬🇪</span>
-            </div>
+              <span>{lang === 'ka' ? 'GE 🇬🇪' : 'EN 🇬🇧'}</span>
+            </button>
             <Link href="/flights" className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-md shadow-emerald-500/20">
               <Search size={14} />
-              დაჯავშნე
+              {t('nav.book')}
             </Link>
           </div>
 
@@ -88,7 +94,7 @@ export default function Header() {
                   }`}
                 >
                   <Icon size={15} />
-                  {item.name}
+                  {t(item.key)}
                 </Link>
               );
             })}
@@ -113,13 +119,21 @@ export default function Header() {
                   }`}
                 >
                   <Icon size={20} />
-                  {item.name}
+                  {t(item.key)}
                 </Link>
               );
             })}
+            {/* Mobile language switcher */}
+            <button
+              onClick={() => { setLang(lang === 'ka' ? 'en' : 'ka'); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-md font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+            >
+              <Globe size={20} />
+              {lang === 'ka' ? 'English 🇬🇧' : 'ქართული 🇬🇪'}
+            </button>
             <Link href="/flights" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-center gap-2 mt-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-3 rounded-xl font-bold transition-colors shadow-md shadow-emerald-500/20">
               <Search size={18} />
-              დაჯავშნე ახლავე
+              {t('nav.bookNow')}
             </Link>
           </nav>
         </div>

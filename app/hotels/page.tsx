@@ -3,12 +3,14 @@
 import { Suspense } from 'react';
 import ServicePage from '@/app/components/ServicePage';
 import { Hotel } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 function HotelsContent() {
+  const { t } = useLang();
   return (
     <ServicePage 
-      title="სასტუმროები და აპარტამენტები"
-      description="იპოვე საუკეთესო განთავსება ნებისმიერ ქალაქში (Klook-ის მხარდაჭერით)."
+      title={t('hotels.pageTitle')}
+      description={t('hotels.pageDesc')}
       icon={Hotel}
       category="hotel"
     />

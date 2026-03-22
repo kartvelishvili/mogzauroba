@@ -8,6 +8,7 @@ import {
   Calendar, Users, Car, Ticket, Smartphone, Globe
 } from 'lucide-react';
 import { getCountryFlag } from '@/app/lib/travel';
+import { useLang } from '@/app/lib/i18n';
 
 interface ServiceItem {
   id: string;
@@ -22,33 +23,7 @@ interface ServiceItem {
   image_url?: string;
 }
 
-const destinationLabels: Record<string, string> = {
-  PAR: 'პარიზი', ROM: 'რომი', BCN: 'ბარსელონა', LON: 'ლონდონი',
-  AMS: 'ამსტერდამი', BER: 'ბერლინი', PRG: 'პრაღა', VIE: 'ვენა',
-  ATH: 'ათენი', IST: 'სტამბოლი', MAD: 'მადრიდი', MIL: 'მილანი',
-  DXB: 'დუბაი', BKK: 'ბანგკოკი', TYO: 'ტოკიო', SIN: 'სინგაპური',
-  HKG: 'ჰონგ კონგი', DEL: 'დელი', TLV: 'თელ-ავივი',
-  NYC: 'ნიუ-იორკი', MIA: 'მაიამი', CUN: 'კანკუნი',
-  CAI: 'კაირო', MRK: 'მარაკეში',
-  TBS: 'თბილისი', KUT: 'ქუთაისი', BUS: 'ბათუმი',
-};
 
-const categoryLabels: Record<string, { label: string; icon: typeof Hotel }> = {
-  hotel: { label: 'სასტუმრო', icon: Hotel },
-  flight: { label: 'ფრენა', icon: Plane },
-  tour: { label: 'ტური', icon: MapPin },
-  transfer: { label: 'ტრანსფერი', icon: Car },
-  ticket: { label: 'ბილეთი', icon: Ticket },
-  esim: { label: 'eSIM', icon: Smartphone },
-  insurance: { label: 'დაზღვევა', icon: ShieldCheck },
-};
-
-const hotelAmenities = [
-  { icon: Wifi, label: 'უფასო Wi-Fi' },
-  { icon: Coffee, label: 'საუზმე ჩართულია' },
-  { icon: CheckCircle, label: 'უფასო გაუქმება' },
-  { icon: ShieldCheck, label: 'დაცული გადახდა' },
-];
 
 export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
   const [hotel, setHotel] = useState<ServiceItem | null>(null);
@@ -56,6 +31,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
   const [crossSell, setCrossSell] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { t, lang } = useLang();
 
   useEffect(() => {
     async function load() {
@@ -77,6 +53,23 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
     load();
   }, [hotelId]);
 
+  const categoryLabels: Record<string, { label: string; icon: typeof Hotel }> = {
+    hotel: { label: t('hd.hotel'), icon: Hotel },
+    flight: { label: t('hd.flight'), icon: Plane },
+    tour: { label: t('hd.tour'), icon: MapPin },
+    transfer: { label: t('hd.transferCat'), icon: Car },
+    ticket: { label: t('hd.ticket'), icon: Ticket },
+    esim: { label: 'eSIM', icon: Smartphone },
+    insurance: { label: t('hd.insurance'), icon: ShieldCheck },
+  };
+
+  const hotelAmenities = [
+    { icon: Wifi, label: t('hd.freeWifi') },
+    { icon: Coffee, label: t('hd.breakfast') },
+    { icon: CheckCircle, label: t('hd.freeCancel') },
+    { icon: ShieldCheck, label: t('hd.securePay') },
+  ];
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -89,16 +82,16 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center text-center px-4">
         <Hotel size={64} className="text-slate-300 mb-6" />
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">სასტუმრო ვერ მოიძებნა</h1>
-        <p className="text-slate-500 mb-6">მოთხოვნილი სასტუმრო არ არსებობს ან წაიშალა</p>
+        <h1 className="text-2xl font-bold text-slate-800 mb-2">{t('hd.notFound')}</h1>
+        <p className="text-slate-500 mb-6">{t('hd.notFoundDesc')}</p>
         <Link href="/hotels" className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold transition-colors">
-          სასტუმროებზე დაბრუნება
+          {t('hd.backToHotels')}
         </Link>
       </div>
     );
   }
 
-  const cityLabel = destinationLabels[hotel.destination] || hotel.destination;
+  const cityLabel = t('city.' + hotel.destination) || hotel.destination;
   const imgSrc = hotel.image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=900&auto=format&fit=crop';
   const rating = (4.2 + Math.random() * 0.7).toFixed(1);
   const reviews = Math.floor(500 + Math.random() * 4500);
@@ -122,7 +115,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
         <div className="absolute top-6 left-6 z-10">
           <Link href="/hotels" className="flex items-center gap-2 bg-black/50 backdrop-blur-sm text-white px-4 py-2 rounded-xl hover:bg-black/70 transition-colors text-sm font-medium">
             <ArrowLeft size={18} />
-            სასტუმროები
+            {t('hd.hotels')}
           </Link>
         </div>
 
@@ -155,7 +148,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
             </h1>
             <p className="text-slate-600 mt-2 text-sm flex items-center gap-2">
               <span className="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md text-xs font-bold">{hotel.provider}</span>
-              ოფიციალური პარტნიორი
+              {t('hd.officialPartner')}
             </p>
           </div>
         </div>
@@ -179,11 +172,13 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
             <div className="bg-white border border-slate-200 rounded-2xl p-6">
               <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
                 <Hotel size={20} className="text-emerald-600" />
-                სასტუმროს შესახებ
+                {t('hd.about')}
               </h2>
               <p className="text-slate-600 leading-relaxed">
                 {hotel.description ||
-                  `${hotel.title} — ${cityLabel}-ის ერთ-ერთი საუკეთესო სასტუმრო. მდებარეობს ქალაქის ცენტრში, ტურისტული ადგილებისა და ტრანსპორტის ახლოს. ყველა ნომერში ხელმისაწვდომია უფასო Wi-Fi, კონდიციონერი და 24 საათიანი მიმღები. სასტუმროს რეიტინგი სტუმრების შეფასებით: ${rating}/5 (${reviews} შეფასება).`
+                  (lang === 'ka'
+                    ? `${hotel.title} — ${cityLabel}-ის ერთ-ერთი საუკეთესო სასტუმრო. მდებარეობს ქალაქის ცენტრში, ტურისტული ადგილებისა და ტრანსპორტის ახლოს. ყველა ნომერში ხელმისაწვდომია უფასო Wi-Fi, კონდიციონერი და 24 საათიანი მიმღები. სასტუმროს რეიტინგი სტუმრების შეფასებით: ${rating}/5 (${reviews} შეფასება).`
+                    : `${hotel.title} — one of the best hotels in ${cityLabel}. Located in the city center, close to tourist attractions and transport. All rooms feature free Wi-Fi, air conditioning, and 24-hour reception. Guest rating: ${rating}/5 (${reviews} reviews).`)
                 }
               </p>
             </div>
@@ -191,29 +186,29 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <DetailCard
                 icon={<Calendar size={20} className="text-emerald-600" />}
-                label="ჩეკ-ინი"
+                label={t('hd.checkIn')}
                 value="14:00"
               />
               <DetailCard
                 icon={<Calendar size={20} className="text-rose-600" />}
-                label="ჩეკ-აუტი"
+                label={t('hd.checkOut')}
                 value="12:00"
               />
               <DetailCard
                 icon={<Users size={20} className="text-blue-600" />}
-                label="სტუმრები"
-                value="2 ადამიანი"
+                label={t('hd.guests')}
+                value={t('hd.guestsValue')}
               />
               <DetailCard
                 icon={<Globe size={20} className="text-purple-600" />}
-                label="ენები"
+                label={t('hd.languages')}
                 value="EN, KA"
               />
             </div>
 
             {/* Provider info */}
             <div className="bg-white border border-slate-200 rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-slate-800 mb-4">პროვაიდერი</h2>
+              <h2 className="text-xl font-bold text-slate-800 mb-4">{t('hd.provider')}</h2>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 font-bold text-lg">
@@ -221,12 +216,12 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
                   </div>
                   <div>
                     <p className="text-slate-800 font-bold">{hotel.provider}</p>
-                    <p className="text-slate-500 text-sm">ოფიციალური პარტნიორი</p>
+                    <p className="text-slate-500 text-sm">{t('hd.officialPartner')}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-emerald-600">
                   <ShieldCheck size={16} />
-                  <span className="text-sm font-medium">ვერიფიცირებული</span>
+                  <span className="text-sm font-medium">{t('hd.verified')}</span>
                 </div>
               </div>
             </div>
@@ -236,10 +231,10 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
           <div className="space-y-6">
             <div className="bg-white border border-slate-200 rounded-2xl p-6 sticky top-32">
               <div className="text-center mb-6">
-                <p className="text-slate-500 text-sm mb-1">ფასი / ღამეში</p>
+                <p className="text-slate-500 text-sm mb-1">{t('hd.pricePerNight')}</p>
                 <p className="text-4xl font-black text-emerald-600">
                   €{Number(hotel.price).toFixed(0)}
-                  <span className="text-base font-normal text-slate-500 ml-1">/ღამე</span>
+                  <span className="text-base font-normal text-slate-500 ml-1">{t('hd.perNight')}</span>
                 </p>
               </div>
 
@@ -250,23 +245,23 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
                 className="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-4 rounded-xl font-bold text-center flex items-center justify-center gap-2 transition-colors mb-4"
               >
                 <ExternalLink size={18} />
-                დაჯავშნე ახლა
+                {t('hd.bookNow')}
               </a>
 
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>ქალაქი</span>
+                  <span>{t('hd.city')}</span>
                   <span className="text-slate-800 flex items-center gap-1.5">
                     <img src={flagUrl} alt="" className="w-4 h-3 rounded-sm" />
                     {cityLabel}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>ვალუტა</span>
+                  <span>{t('hd.currency')}</span>
                   <span className="text-slate-800">{hotel.currency || 'EUR'}</span>
                 </div>
                 <div className="flex items-center justify-between text-slate-500">
-                  <span>რეიტინგი</span>
+                  <span>{t('hd.rating')}</span>
                   <span className="text-amber-600 flex items-center gap-1">
                     <Star size={12} className="fill-amber-400 text-amber-400" />
                     {rating}
@@ -279,7 +274,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
                 <div className="mt-6 pt-4 border-t border-slate-200">
                   <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
                     <Smartphone size={12} className="inline mr-1" />
-                    eSIM — ინტერნეტი ჩამოფრენისთანავე
+                    {t('hd.esim')}
                   </p>
                   {esims.map((esim, i) => (
                     <a
@@ -302,29 +297,29 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
         {/* Cross-sell: Flights */}
         {flights.length > 0 && (
           <CrossSellSection
-            title={`ფრენები ${cityLabel}-ში`}
+            title={`${t('hd.flightsTo')} ${cityLabel}`}
             icon={<Plane size={22} className="text-blue-600" />}
             items={flights}
             linkPrefix="/flights"
-            priceLabel="/ადამ."
+            priceLabel={t('hd.perPerson')}
           />
         )}
 
         {/* Cross-sell: Tours */}
         {tours.length > 0 && (
           <CrossSellSection
-            title={`ტურები ${cityLabel}-ში`}
+            title={`${t('hd.toursIn')} ${cityLabel}`}
             icon={<MapPin size={22} className="text-purple-600" />}
             items={tours}
             linkPrefix="/ticket"
-            priceLabel="/ადამ."
+            priceLabel={t('hd.perPerson')}
           />
         )}
 
         {/* Cross-sell: Tickets */}
         {tickets.length > 0 && (
           <CrossSellSection
-            title={`ბილეთები & ატრაქციონები`}
+            title={t('hd.ticketsAttractions')}
             icon={<Ticket size={22} className="text-orange-600" />}
             items={tickets}
             linkPrefix="/ticket"
@@ -335,7 +330,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
         {/* Cross-sell: Transfers */}
         {transfers.length > 0 && (
           <CrossSellSection
-            title="ტრანსფერი აეროპორტიდან"
+            title={t('hd.transferAirport')}
             icon={<Car size={22} className="text-amber-600" />}
             items={transfers}
             priceLabel=""
@@ -347,7 +342,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
               <Hotel size={22} className="text-emerald-600" />
-              სხვა სასტუმროები {cityLabel}-ში
+              {t('hd.otherHotels')} {cityLabel}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {related.map((item, i) => (
@@ -369,7 +364,7 @@ export default function HotelDetailClient({ hotelId }: { hotelId: string }) {
                     <div className="flex items-center justify-between mt-3">
                       <p className="text-emerald-600 font-black">
                         €{Number(item.price).toFixed(0)}
-                        <span className="text-slate-500 text-xs font-normal ml-1">/ღამე</span>
+                        <span className="text-slate-500 text-xs font-normal ml-1">{t('hd.perNight')}</span>
                       </p>
                       <ChevronRight size={16} className="text-slate-400 group-hover:text-emerald-500 transition-colors" />
                     </div>

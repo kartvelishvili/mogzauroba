@@ -3,12 +3,14 @@
 import { Suspense } from 'react';
 import ServicePage from '@/app/components/ServicePage';
 import { MapPin } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 function PlacesContent() {
+  const { t } = useLang();
   return (
     <ServicePage 
-      title="ადგილები & ტურები" 
-      description="პოპულარული ღირსშესანიშნაობები, ტურები და ბილეთები — GetYourGuide, Viator, Tiqets." 
+      title={t('places.pageTitle')} 
+      description={t('places.pageDesc')} 
       icon={MapPin} 
       category="tour,ticket"
     />

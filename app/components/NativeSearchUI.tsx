@@ -8,6 +8,7 @@ import {
   Calendar,
   ArrowRight,
 } from 'lucide-react';
+import { useLang } from '@/app/lib/i18n';
 
 export default function NativeSearchUI() {
   const router = useRouter();
@@ -15,12 +16,13 @@ export default function NativeSearchUI() {
   const [destination, setDestination] = useState('');
   const [date, setDate] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { t } = useLang();
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
 
     if (!destination) {
-      setErrorMessage('გთხოვ, მიუთითე მიმართულება.');
+      setErrorMessage(t('search.enterDestination'));
       return;
     }
 
@@ -45,7 +47,7 @@ export default function NativeSearchUI() {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
         </span>
-        ჭკვიანი პაკეტის ძიება
+        {t('search.smartSearch')}
       </div>
 
       <div className="w-full bg-white backdrop-blur-2xl border border-slate-200 p-4 md:p-6 rounded-3xl shadow-lg relative z-20">
@@ -56,7 +58,7 @@ export default function NativeSearchUI() {
               type="text"
               value={origin}
               onChange={(e) => setOrigin(e.target.value.toUpperCase())}
-              placeholder="საიდან (მაგ: TBS)"
+              placeholder={t('search.from')}
               className="w-full bg-transparent text-slate-800 uppercase font-bold py-3 px-3 focus:outline-none placeholder-slate-400"
             />
           </div>
@@ -69,7 +71,7 @@ export default function NativeSearchUI() {
               type="text"
               value={destination}
               onChange={(e) => setDestination(e.target.value.toUpperCase())}
-              placeholder="სად (მაგ: PAR, ROM, DXB)"
+              placeholder={t('search.to')}
               className="w-full bg-transparent text-slate-800 uppercase font-bold py-3 px-3 focus:outline-none placeholder-slate-400"
             />
           </div>
@@ -90,15 +92,15 @@ export default function NativeSearchUI() {
             className="w-full md:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-black py-5 px-10 rounded-2xl flex items-center justify-center gap-2 transition-all active:scale-95 text-lg shadow-md shadow-emerald-500/20"
           >
             <Search size={24} />
-            ძიება
+            {t('search.search')}
           </button>
         </form>
 
         <div className="mt-4 flex flex-col gap-2 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <span>
-            Live flights + local catalog: ფრენები მოდის API-დან, დანარჩენი სერვისები ჩვენი კატალოგიდან.
+            {t('search.liveInfo')}
           </span>
-          {date ? <span className="text-emerald-600">თარიღი: {date}</span> : null}
+          {date ? <span className="text-emerald-600">{t('search.date')}: {date}</span> : null}
         </div>
 
         {errorMessage ? <p className="mt-3 text-sm font-medium text-rose-400">{errorMessage}</p> : null}
