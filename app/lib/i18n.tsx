@@ -434,9 +434,19 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // Map page
     'mp.title': 'რუკა',
-    'mp.subtitle': 'დაგეგმე მარშრუტი და მოძებნე ახლო ლოკაციები.',
+    'mp.subtitle': 'ინტერაქტიული რუკა ყველა მიმართულებით.',
     'mp.worldMap': 'მსოფლიო რუკა',
     'mp.worldDesc': 'აღმოაჩინე 27+ მიმართულება მსოფლიოს ყველა კონტინენტზე — ევროპა, აზია, ამერიკა, აფრიკა.',
+    'mp.services': 'სერვისი',
+    'mp.loading': 'იტვირთება...',
+    'mp.viewAll': 'ყველას ნახვა',
+    'mp.from': '-დან',
+    'mp.allRegions': 'ყველა',
+    'mp.europe': 'ევროპა',
+    'mp.asia': 'აზია',
+    'mp.america': 'ამერიკა',
+    'mp.africa': 'აფრიკა',
+    'mp.georgia': 'საქართველო',
 
     // About page extra
     'ab.badge': 'ჩვენს შესახებ',
@@ -891,9 +901,19 @@ const translations: Record<Lang, Record<string, string>> = {
 
     // Map page
     'mp.title': 'Map',
-    'mp.subtitle': 'Plan your route and find nearby locations.',
+    'mp.subtitle': 'Interactive map with all destinations.',
     'mp.worldMap': 'World Map',
     'mp.worldDesc': 'Discover 27+ destinations across all continents — Europe, Asia, Americas, Africa.',
+    'mp.services': 'service(s)',
+    'mp.loading': 'Loading...',
+    'mp.viewAll': 'View All',
+    'mp.from': 'from',
+    'mp.allRegions': 'All',
+    'mp.europe': 'Europe',
+    'mp.asia': 'Asia',
+    'mp.america': 'Americas',
+    'mp.africa': 'Africa',
+    'mp.georgia': 'Georgia',
 
     // About page extra
     'ab.badge': 'About Us',
