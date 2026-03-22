@@ -30,43 +30,43 @@ const regionKeys = [
   { id: 'georgia', key: 'discover.georgia' },
 ];
 
-const cityDataByRegion: Record<string, { code: string; labelKey: string; flag: string }[]> = {
+const cityDataByRegion: Record<string, { code: string; labelKey: string; country: string }[]> = {
   'europe': [
-    { code: 'PAR', labelKey: 'city.PAR', flag: '🇫🇷' },
-    { code: 'ROM', labelKey: 'city.ROM', flag: '🇮🇹' },
-    { code: 'BCN', labelKey: 'city.BCN', flag: '🇪🇸' },
-    { code: 'LON', labelKey: 'city.LON', flag: '🇬🇧' },
-    { code: 'AMS', labelKey: 'city.AMS', flag: '🇳🇱' },
-    { code: 'BER', labelKey: 'city.BER', flag: '🇩🇪' },
-    { code: 'PRG', labelKey: 'city.PRG', flag: '🇨🇿' },
-    { code: 'VIE', labelKey: 'city.VIE', flag: '🇦🇹' },
-    { code: 'ATH', labelKey: 'city.ATH', flag: '🇬🇷' },
-    { code: 'IST', labelKey: 'city.IST', flag: '🇹🇷' },
-    { code: 'MAD', labelKey: 'city.MAD', flag: '🇪🇸' },
-    { code: 'MIL', labelKey: 'city.MIL', flag: '🇮🇹' },
+    { code: 'PAR', labelKey: 'city.PAR', country: 'fr' },
+    { code: 'ROM', labelKey: 'city.ROM', country: 'it' },
+    { code: 'BCN', labelKey: 'city.BCN', country: 'es' },
+    { code: 'LON', labelKey: 'city.LON', country: 'gb' },
+    { code: 'AMS', labelKey: 'city.AMS', country: 'nl' },
+    { code: 'BER', labelKey: 'city.BER', country: 'de' },
+    { code: 'PRG', labelKey: 'city.PRG', country: 'cz' },
+    { code: 'VIE', labelKey: 'city.VIE', country: 'at' },
+    { code: 'ATH', labelKey: 'city.ATH', country: 'gr' },
+    { code: 'IST', labelKey: 'city.IST', country: 'tr' },
+    { code: 'MAD', labelKey: 'city.MAD', country: 'es' },
+    { code: 'MIL', labelKey: 'city.MIL', country: 'it' },
   ],
   'asia': [
-    { code: 'DXB', labelKey: 'city.DXB', flag: '🇦🇪' },
-    { code: 'BKK', labelKey: 'city.BKK', flag: '🇹🇭' },
-    { code: 'TYO', labelKey: 'city.TYO', flag: '🇯🇵' },
-    { code: 'SIN', labelKey: 'city.SIN', flag: '🇸🇬' },
-    { code: 'HKG', labelKey: 'city.HKG', flag: '🇭🇰' },
-    { code: 'DEL', labelKey: 'city.DEL', flag: '🇮🇳' },
-    { code: 'TLV', labelKey: 'city.TLV', flag: '🇮🇱' },
+    { code: 'DXB', labelKey: 'city.DXB', country: 'ae' },
+    { code: 'BKK', labelKey: 'city.BKK', country: 'th' },
+    { code: 'TYO', labelKey: 'city.TYO', country: 'jp' },
+    { code: 'SIN', labelKey: 'city.SIN', country: 'sg' },
+    { code: 'HKG', labelKey: 'city.HKG', country: 'hk' },
+    { code: 'DEL', labelKey: 'city.DEL', country: 'in' },
+    { code: 'TLV', labelKey: 'city.TLV', country: 'il' },
   ],
   'america': [
-    { code: 'NYC', labelKey: 'city.NYC', flag: '🇺🇸' },
-    { code: 'MIA', labelKey: 'city.MIA', flag: '🇺🇸' },
-    { code: 'CUN', labelKey: 'city.CUN', flag: '🇲🇽' },
+    { code: 'NYC', labelKey: 'city.NYC', country: 'us' },
+    { code: 'MIA', labelKey: 'city.MIA', country: 'us' },
+    { code: 'CUN', labelKey: 'city.CUN', country: 'mx' },
   ],
   'africa': [
-    { code: 'CAI', labelKey: 'city.CAI', flag: '🇪🇬' },
-    { code: 'MRK', labelKey: 'city.MRK', flag: '🇲🇦' },
+    { code: 'CAI', labelKey: 'city.CAI', country: 'eg' },
+    { code: 'MRK', labelKey: 'city.MRK', country: 'ma' },
   ],
   'georgia': [
-    { code: 'TBS', labelKey: 'city.TBS', flag: '🇬🇪' },
-    { code: 'KUT', labelKey: 'city.KUT', flag: '🇬🇪' },
-    { code: 'BUS', labelKey: 'city.BUS', flag: '🇬🇪' },
+    { code: 'TBS', labelKey: 'city.TBS', country: 'ge' },
+    { code: 'KUT', labelKey: 'city.KUT', country: 'ge' },
+    { code: 'BUS', labelKey: 'city.BUS', country: 'ge' },
   ],
 };
 
@@ -272,7 +272,7 @@ export default function DiscoverSection() {
                     : 'bg-slate-50 text-slate-500 hover:text-slate-700 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
-                <span>{city.flag}</span>
+                <img src={`https://flagcdn.com/w20/${city.country}.png`} alt="" width={16} height={12} className="rounded-sm" />
                 {t(city.labelKey)}
               </button>
             ))}
@@ -471,7 +471,7 @@ export default function DiscoverSection() {
                       : 'bg-slate-50 text-slate-500 hover:text-slate-700 hover:bg-slate-100 border border-slate-200'
                   }`}
                 >
-                  <span>{city.flag}</span>
+                  <img src={`https://flagcdn.com/w20/${city.country}.png`} alt="" width={16} height={12} className="rounded-sm" />
                   {t(city.labelKey)}
                 </button>
               ))}

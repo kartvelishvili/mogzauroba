@@ -6,16 +6,16 @@ import Footer from '../components/Footer';
 import { useLang } from '@/app/lib/i18n';
 
 const rates = [
-  { code: 'EUR', name: 'ევრო', en: 'Euro', flag: '🇪🇺', rateToGel: 2.85 },
-  { code: 'USD', name: 'დოლარი', en: 'Dollar', flag: '🇺🇸', rateToGel: 2.65 },
-  { code: 'GBP', name: 'გირვანქა სტერლინგი', en: 'British Pound', flag: '🇬🇧', rateToGel: 3.35 },
-  { code: 'TRY', name: 'თურქული ლირა', en: 'Turkish Lira', flag: '🇹🇷', rateToGel: 0.082 },
-  { code: 'AED', name: 'დირჰამი', en: 'Dirham', flag: '🇦🇪', rateToGel: 0.72 },
-  { code: 'JPY', name: 'იაპონური იენი', en: 'Japanese Yen', flag: '🇯🇵', rateToGel: 0.018 },
-  { code: 'THB', name: 'ტაილანდური ბატი', en: 'Thai Baht', flag: '🇹🇭', rateToGel: 0.076 },
-  { code: 'EGP', name: 'ეგვიპტური ფუნტი', en: 'Egyptian Pound', flag: '🇪🇬', rateToGel: 0.054 },
-  { code: 'CZK', name: 'ჩეხური კრონა', en: 'Czech Koruna', flag: '🇨🇿', rateToGel: 0.12 },
-  { code: 'INR', name: 'ინდური რუპია', en: 'Indian Rupee', flag: '🇮🇳', rateToGel: 0.032 },
+  { code: 'EUR', name: 'ევრო', en: 'Euro', country: 'eu', rateToGel: 2.85 },
+  { code: 'USD', name: 'დოლარი', en: 'Dollar', country: 'us', rateToGel: 2.65 },
+  { code: 'GBP', name: 'გირვანქა სტერლინგი', en: 'British Pound', country: 'gb', rateToGel: 3.35 },
+  { code: 'TRY', name: 'თურქული ლირა', en: 'Turkish Lira', country: 'tr', rateToGel: 0.082 },
+  { code: 'AED', name: 'დირჰამი', en: 'Dirham', country: 'ae', rateToGel: 0.72 },
+  { code: 'JPY', name: 'იაპონური იენი', en: 'Japanese Yen', country: 'jp', rateToGel: 0.018 },
+  { code: 'THB', name: 'ტაილანდური ბატი', en: 'Thai Baht', country: 'th', rateToGel: 0.076 },
+  { code: 'EGP', name: 'ეგვიპტური ფუნტი', en: 'Egyptian Pound', country: 'eg', rateToGel: 0.054 },
+  { code: 'CZK', name: 'ჩეხური კრონა', en: 'Czech Koruna', country: 'cz', rateToGel: 0.12 },
+  { code: 'INR', name: 'ინდური რუპია', en: 'Indian Rupee', country: 'in', rateToGel: 0.032 },
 ];
 
 export default function CurrencyPage() {
@@ -58,7 +58,7 @@ export default function CurrencyPage() {
                {rates.map(r => (
                  <div key={r.code} className="flex justify-between items-center py-4 border-b border-slate-200 last:border-0">
                     <div className="flex items-center gap-3">
-                      <span className="text-lg">{r.flag}</span>
+                      <img src={`https://flagcdn.com/w40/${r.country}.png`} alt="" width={24} height={18} className="rounded-sm" />
                       <span className="bg-slate-100 px-3 py-1 rounded font-bold text-slate-700">{r.code}</span>
                       <span className="text-sm text-slate-500">{lang === 'en' ? r.en : r.name}</span>
                     </div>
@@ -82,7 +82,7 @@ export default function CurrencyPage() {
             {rates.map(r => (
               <div key={r.code} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{r.flag}</span>
+                  <img src={`https://flagcdn.com/w40/${r.country}.png`} alt="" width={28} height={21} className="rounded-sm" />
                   <div>
                     <span className="font-bold text-slate-800">{r.code}</span>
                     <span className="text-sm text-slate-500 ml-2">{lang === 'en' ? r.en : r.name}</span>

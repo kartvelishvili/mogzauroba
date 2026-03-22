@@ -45,7 +45,7 @@ export default function DashboardOverview() {
 
         <div className="bg-indigo-50 border border-indigo-200 rounded-3xl p-6 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-24 h-24 bg-indigo-200/50 blur-2xl rounded-full"></div>
-          <h3 className="text-indigo-600 font-bold mb-2">{lang === 'ka' ? 'ახალი ტური პარიზში 🇫🇷' : 'New tour in Paris 🇫🇷'}</h3>
+          <h3 className="text-indigo-600 font-bold mb-2">{lang === 'ka' ? 'ახალი ტური პარიზში' : 'New tour in Paris'} <img src="https://flagcdn.com/w20/fr.png" alt="" width={16} height={12} className="inline rounded-sm" /></h3>
           <p className="text-slate-500 text-sm mb-4">{lang === 'ka' ? 'დაასრულე ჯავშანი და მიიღე 10% ქეშბექი ბალანსზე.' : 'Complete booking and get 10% cashback.'}</p>
           <button className="bg-indigo-500 hover:bg-indigo-400 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm w-full">
             {lang === 'ka' ? 'ვიზარდის გაგრძელება →' : 'Continue wizard →'}
@@ -66,7 +66,7 @@ export default function DashboardOverview() {
           
           <div className="flex-1 w-full">
             <div className="flex items-center justify-between mb-2">
-               <h3 className="text-2xl font-bold text-slate-800">{lang === 'ka' ? 'რომი, იტალია 🇮🇹' : 'Rome, Italy 🇮🇹'}</h3>
+               <h3 className="text-2xl font-bold text-slate-800">{lang === 'ka' ? 'რომი, იტალია' : 'Rome, Italy'} <img src="https://flagcdn.com/w20/it.png" alt="" width={16} height={12} className="inline rounded-sm" /></h3>
                <span className="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-200 rounded-full text-xs font-bold uppercase tracking-wide">
                  {lang === 'ka' ? 'გადასახდელია' : 'Due'}
                </span>

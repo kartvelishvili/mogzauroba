@@ -57,8 +57,8 @@ export default function Header() {
               onClick={() => setLang(lang === 'ka' ? 'en' : 'ka')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600 hover:bg-slate-200 transition-colors cursor-pointer"
             >
-              <img src={lang === 'ka' ? 'https://flagcdn.com/w40/ge.png' : 'https://flagcdn.com/w40/gb.png'} alt="" width={18} height={13} className="rounded-sm" />
-              <span>{lang === 'ka' ? 'GE' : 'EN'}</span>
+              <img src={lang === 'ka' ? 'https://flagcdn.com/w40/gb.png' : 'https://flagcdn.com/w40/ge.png'} alt="" width={18} height={13} className="rounded-sm" />
+              <span>{lang === 'ka' ? 'EN' : 'GE'}</span>
             </button>
             <Link href="/flights" className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-md shadow-emerald-500/20">
               <Search size={14} />
