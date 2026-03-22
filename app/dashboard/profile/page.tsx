@@ -51,7 +51,7 @@ export default function ProfilePage() {
                 </div>
                 <input 
                   type="email" 
-                  defaultValue="test@biujeturi.ge"
+                  defaultValue="test@mogzauroba.com"
                   disabled
                   className="w-full bg-slate-100 border border-slate-200 text-slate-400 rounded-xl py-3 pl-12 pr-4 cursor-not-allowed"
                 />

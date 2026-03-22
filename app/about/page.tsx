@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 
 export const metadata: Metadata = {
   title: 'ჩვენს შესახებ',
-  description: 'Biujeturi.ge — ქართული სამოგზაურო პლატფორმა. ავიაბილეთები, სასტუმროები, ტურები და ტრანსფერები.',
+  description: 'Mogzauroba.com — ქართული სამოგზაურო პლატფორმა. ავიაბილეთები, სასტუმროები, ტურები და ტრანსფერები.',
 };
 
 const team = [
@@ -33,7 +33,7 @@ export default function AboutPage() {
               ჩვენს შესახებ
             </div>
             <h1 className="text-4xl md:text-5xl font-black text-slate-800 mb-6">
-              Biujeturi.ge — ქართული<br />სამოგზაურო პლატფორმა
+              Mogzauroba.com — ქართული<br />სამოგზაურო პლატფორმა
             </h1>
             <p className="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
               ჩვენ ვქმნით ერთიან სივრცეს ქართველი მოგზაურებისთვის, 
@@ -77,7 +77,7 @@ export default function AboutPage() {
       {/* Why Us */}
       <div className="bg-slate-50 border-y border-slate-200">
         <div className="max-w-5xl mx-auto px-4 md:px-8 py-16">
-          <h2 className="text-3xl font-black text-slate-800 text-center mb-12">რატომ Biujeturi.ge?</h2>
+          <h2 className="text-3xl font-black text-slate-800 text-center mb-12">რატომ Mogzauroba.com?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               { icon: Shield, title: 'უსაფრთხო', desc: 'SSL დაშიფვრა და დაცული ტრანზაქციები' },
@@ -136,7 +136,7 @@ export default function AboutPage() {
           <h2 className="text-3xl font-black text-slate-800 mb-4">გაქვს შეკითხვა?</h2>
           <p className="text-slate-500 mb-8 max-w-md mx-auto">დაგვიკავშირდი ნებისმიერ დროს — ჩვენი გუნდი მზად არის შენ დასახმარებლად.</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="mailto:info@biujeturi.ge" className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold transition-colors">
+            <a href="mailto:info@mogzauroba.com" className="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-2xl font-bold transition-colors">
               ელ-ფოსტით
             </a>
             <a href="tel:+995500000000" className="border border-slate-300 hover:border-slate-400 text-slate-600 px-8 py-3 rounded-2xl font-bold transition-colors">

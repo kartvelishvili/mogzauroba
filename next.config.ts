@@ -9,6 +9,19 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Link',
+            value: '<https://cdn.web-fonts.ge>; rel=preconnect; crossorigin',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -43,7 +43,7 @@ export default function Header() {
               <Compass className="text-white" size={20} />
             </div>
             <div className="flex flex-col">
-              <span className="leading-tight">Biujeturi</span>
+              <span className="leading-tight">Mogzauroba</span>
               <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase leading-tight">Travel Platform</span>
             </div>
           </Link>

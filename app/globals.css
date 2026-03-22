@@ -29,3 +29,9 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
+
+/* Force font-display: swap for Georgian web fonts to prevent FOIT */
+@font-face { font-family: 'BPG Nino Mtavruli'; font-display: swap; src: local('BPG Nino Mtavruli'); }
+@font-face { font-family: 'BPG Nino Mtavruli Bold'; font-display: swap; src: local('BPG Nino Mtavruli Bold'); }
+@font-face { font-family: 'BPG Arial'; font-display: swap; src: local('BPG Arial'); }
+@font-face { font-family: 'BPG Glaho'; font-display: swap; src: local('BPG Glaho'); }

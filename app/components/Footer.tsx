@@ -33,7 +33,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2 text-xl font-black text-slate-800 mb-4">
               <Compass className="text-emerald-500" size={24} />
-              <span>Biujeturi.ge</span>
+              <span>Mogzauroba.com</span>
             </Link>
             <p className="text-sm text-slate-500 leading-relaxed mb-6">
               ქართული სამოგზაურო პლატფორმა — ავიაბილეთები, სასტუმროები, ტურები და ტრანსფერები ერთიან ჭკვიან ძიებაში.
@@ -45,7 +45,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-3 text-slate-500">
                 <Mail size={14} className="text-emerald-500 shrink-0" />
-                <span>info@biujeturi.ge</span>
+                <span>info@mogzauroba.com</span>
               </div>
               <div className="flex items-center gap-3 text-slate-500">
                 <Clock size={14} className="text-emerald-500 shrink-0" />
@@ -109,7 +109,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-slate-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-500 text-xs font-medium">
-            © 2024–2026 Biujeturi.ge — ყველა უფლება დაცულია
+            © 2024–2026 Mogzauroba.com — ყველა უფლება დაცულია
           </p>
           <p className="text-slate-400 text-xs">
             Powered by Travelpayouts API & Supabase
