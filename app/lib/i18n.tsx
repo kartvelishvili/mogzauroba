@@ -945,7 +945,18 @@ export function LangProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem('lang') as Lang | null;
     if (saved === 'en' || saved === 'ka') {
       setLangState(saved);
+      return;
     }
+    // First visit — detect country via geo-IP
+    fetch('https://ipapi.co/country/', { signal: AbortSignal.timeout(3000) })
+      .then(r => r.text())
+      .then(code => {
+        const country = code.trim().toUpperCase();
+        const detected: Lang = country === 'GE' ? 'ka' : 'en';
+        setLangState(detected);
+        localStorage.setItem('lang', detected);
+      })
+      .catch(() => { /* keep default ka on error */ });
   }, []);
 
   const setLang = (newLang: Lang) => {
