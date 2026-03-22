@@ -119,12 +119,7 @@ export default async function Home() {
         <NativeSearchUI />
       </div>
 
-      {/* Travelpayouts White Label Search */}
-      <div className="z-20 w-full max-w-7xl px-4 md:px-8 mt-10">
-        <div id="tpwl-search"></div>
-      </div>
-
-      {/* PLATFORM STATS BAR */}
+      {/* PLATFORM STATS BAR */}}
       <div className="z-10 w-full max-w-7xl px-4 md:px-8 mt-20">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
