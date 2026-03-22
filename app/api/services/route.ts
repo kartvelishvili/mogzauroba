@@ -1,37 +1,17 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/app/lib/db';
-import type { ServiceCategory, TravelService } from '@/app/lib/travel';
+import { getServicesByDestination } from '@/app/lib/catalog';
 
-// This API route fetches pre-synced multi-provider data directly from PostgreSQL.
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const destination = searchParams.get('destination') || 'PAR';
-  const category = searchParams.get('category'); // Optional filter, supports comma separated values
+  const category = searchParams.get('category');
 
   try {
-    let sql = 'SELECT * FROM travel_services WHERE destination = $1';
-    const params: unknown[] = [destination];
-    let paramIndex = 2;
+    const categories = category
+      ? category.split(',').map(c => c.trim()).filter(Boolean)
+      : undefined;
 
-    if (category) {
-      const categories = category
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean) as ServiceCategory[];
-
-      if (categories.length === 1) {
-        sql += ` AND category = $${paramIndex}`;
-        params.push(categories[0]);
-      } else if (categories.length > 1) {
-        const placeholders = categories.map((_, i) => `$${paramIndex + i}`).join(', ');
-        sql += ` AND category IN (${placeholders})`;
-        params.push(...categories);
-      }
-    }
-
-    sql += ' ORDER BY price ASC';
-
-    const data = await query<TravelService>(sql, params);
+    const data = getServicesByDestination(destination, categories);
 
     return NextResponse.json({
       success: true,

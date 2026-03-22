@@ -3,7 +3,7 @@ import Footer from './components/Footer';
 import DiscoverSection from './components/DiscoverSection';
 import { MapPin, Plane, Car, Hotel, Ticket, Shield, Globe, Star, Users, PhoneCall, Map, Wifi } from 'lucide-react';
 import Link from 'next/link';
-import { queryCount, query } from './lib/db';
+import { getCatalog, getProviderCount } from './lib/catalog';
 import { DESTINATION_PRESETS, getCountryFlag } from './lib/travel';
 
 const destinations = [
@@ -37,17 +37,11 @@ const services = [
 ];
 
 export default async function Home() {
-  // Fetch live stats from database
-  let totalOffers = 0;
-  let providerCount = 0;
-  try {
-    totalOffers = await queryCount('SELECT COUNT(*) as count FROM travel_services');
-    const providers = await query<{ provider: string }>('SELECT DISTINCT provider FROM travel_services');
-    providerCount = providers.length;
-  } catch { /* fallback to 0 */ }
+  const totalOffers = getCatalog().length;
+  const providerCount = getProviderCount();
 
   const destinationCount = DESTINATION_PRESETS.length;
-  const offersLabel = totalOffers > 0 ? `${totalOffers.toLocaleString()}+` : '1000+';
+  const offersLabel = `${totalOffers.toLocaleString()}+`;
 
   return (
     <main className="min-h-screen bg-white text-slate-800 flex flex-col items-center overflow-x-hidden relative -mt-16 xl:-mt-28">

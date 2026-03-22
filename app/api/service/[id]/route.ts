@@ -1,39 +1,35 @@
 import { NextResponse } from 'next/server';
-import { query, queryOne } from '@/app/lib/db';
+import { getServiceById, getCatalog } from '@/app/lib/catalog';
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  const numId = parseInt(id, 10);
 
   try {
-    const item = await queryOne('SELECT * FROM travel_services WHERE id = $1', [id]);
+    const item = getServiceById(numId);
 
     if (!item) {
       return NextResponse.json({ success: false, error: 'Service not found' }, { status: 404 });
     }
 
-    // Related items: same destination + same category
-    const related = await query(
-      'SELECT * FROM travel_services WHERE destination = $1 AND category = $2 AND id != $3 LIMIT 6',
-      [item.destination, item.category, id]
-    );
+    const catalog = getCatalog();
 
-    // Cross-sell: other categories from same destination
-    const crossSellCategories = ['hotel', 'flight', 'tour', 'transfer', 'esim', 'ticket', 'insurance']
-      .filter(cat => cat !== item.category);
-    const placeholders = crossSellCategories.map((_, i) => `$${i + 3}`).join(', ');
-    const crossSell = await query(
-      `SELECT * FROM travel_services WHERE destination = $1 AND category IN (${placeholders}) LIMIT 12`,
-      [item.destination, ...crossSellCategories]
-    );
+    const related = catalog
+      .filter(s => s.destination === item.destination && s.category === item.category && s.id !== numId)
+      .slice(0, 6);
+
+    const crossSell = catalog
+      .filter(s => s.destination === item.destination && s.category !== item.category)
+      .slice(0, 12);
 
     return NextResponse.json({
       success: true,
       data: item,
-      related: related || [],
-      crossSell: crossSell || [],
+      related,
+      crossSell,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
