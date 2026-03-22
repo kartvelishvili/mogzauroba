@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/app/components/Header";
 import CookieConsent from "@/app/components/CookieConsent";
-import Script from "next/script";
-
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -51,14 +49,11 @@ export default function RootLayout({
           {children}
         </div>
         <CookieConsent />
-        <Script
-          src="https://tpembd.com/wl_web/main.js?wl_id=15360"
-          strategy="afterInteractive"
-          type="module"
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var s=document.createElement("script");s.async=1;s.type="module";s.src="https://tpembd.com/wl_web/main.js?wl_id=15360";document.head.appendChild(s);window.TPWL_CONFIGURATION={...window.TPWL_CONFIGURATION,resultsURL:"https://mogzauroba.com"};})();`,
+          }}
         />
-        <Script id="tpwl-config" strategy="afterInteractive">
-          {`window.TPWL_CONFIGURATION = { ...window.TPWL_CONFIGURATION, resultsURL: "https://mogzauroba.com" };`}
-        </Script>
       </body>
     </html>
   );
