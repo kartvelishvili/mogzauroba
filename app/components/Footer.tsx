@@ -106,11 +106,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Travelpayouts White Label Search */}
-        <div className="mb-12">
-          <div id="tpwl-search"></div>
-        </div>
-
         {/* Bottom Bar */}
         <div className="border-t border-slate-200 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-slate-500 text-xs font-medium">

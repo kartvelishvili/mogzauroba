@@ -49,11 +49,6 @@ export default function RootLayout({
           {children}
         </div>
         <CookieConsent />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var s=document.createElement("script");s.async=1;s.type="module";s.src="https://tpembd.com/wl_web/main.js?wl_id=15360";document.head.appendChild(s);window.TPWL_CONFIGURATION={...window.TPWL_CONFIGURATION,resultsURL:"https://mogzauroba.com"};})();`,
-          }}
-        />
       </body>
     </html>
   );
