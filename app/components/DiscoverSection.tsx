@@ -345,7 +345,7 @@ export default function DiscoverSection() {
                         <div>
                           <span className="text-xs text-slate-400">ფასი</span>
                           <p className="text-lg font-black text-emerald-600">
-                            €{item.price.toFixed(0)}
+                            €{Number(item.price).toFixed(0)}
                             {hasDiscount && (
                               <span className="text-slate-400 line-through text-xs ml-1.5">
                                 €{Math.round(item.price * (1 + discountPct / 100))}
@@ -553,7 +553,7 @@ export default function DiscoverSection() {
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-emerald-600 text-lg font-black">
-                              €{hotel.price.toFixed(0)}
+                              €{Number(hotel.price).toFixed(0)}
                               <span className="text-slate-400 text-[11px] font-normal ml-1">/ღამე</span>
                             </p>
                           </div>

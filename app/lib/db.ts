@@ -1,4 +1,8 @@
-import { Pool } from 'pg';
+import { Pool, types } from 'pg';
+
+// Parse numeric/bigint as JS numbers instead of strings
+types.setTypeParser(1700, (val: string) => parseFloat(val));
+types.setTypeParser(20, (val: string) => parseInt(val, 10));
 
 let _pool: Pool | null = null;
 

@@ -232,7 +232,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
               <div className="text-center mb-6">
                 <p className="text-slate-500 text-sm mb-1">ფასი</p>
                 <p className="text-4xl font-black text-emerald-600">
-                  €{ticket.price.toFixed(0)}
+                  €{Number(ticket.price).toFixed(0)}
                   <span className="text-base font-normal text-slate-500 ml-1">/ადამ.</span>
                 </p>
               </div>
@@ -289,7 +289,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
                   <div className="p-3 flex flex-col justify-between flex-1 min-w-0">
                     <h3 className="text-sm font-bold text-slate-800 line-clamp-2">{item.title}</h3>
                     <div className="flex items-center justify-between mt-2">
-                      <p className="text-emerald-600 font-black">€{item.price.toFixed(0)}</p>
+                      <p className="text-emerald-600 font-black">€{Number(item.price).toFixed(0)}</p>
                       <ChevronRight size={16} className="text-slate-400 group-hover:text-purple-500 transition-colors" />
                     </div>
                   </div>
@@ -326,7 +326,7 @@ export default function TicketDetailClient({ ticketId }: { ticketId: string }) {
                       <MapPin size={10} /> {cityLabel}
                     </p>
                     <p className="text-emerald-600 font-black mt-2">
-                      €{hotel.price.toFixed(0)}
+                      €{Number(hotel.price).toFixed(0)}
                       <span className="text-slate-500 text-xs font-normal ml-1">/ღამე</span>
                     </p>
                   </div>

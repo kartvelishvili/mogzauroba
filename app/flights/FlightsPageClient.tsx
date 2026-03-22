@@ -578,7 +578,7 @@ export default function FlightsPageClient() {
                         <span className="text-[10px] font-bold text-emerald-600">{hotel.provider}</span>
                         <h3 className="text-sm font-bold text-slate-800 line-clamp-1">{hotel.title}</h3>
                         <p className="text-emerald-600 font-black mt-2">
-                          €{hotel.price.toFixed(0)}
+                          €{Number(hotel.price).toFixed(0)}
                           <span className="text-slate-500 text-xs font-normal ml-1">/ღამე</span>
                         </p>
                       </div>
@@ -612,7 +612,7 @@ export default function FlightsPageClient() {
                       <div className="p-3">
                         <span className="text-[10px] font-bold text-orange-600">{item.provider}</span>
                         <h3 className="text-sm font-bold text-slate-800 line-clamp-1">{item.title}</h3>
-                        <p className="text-emerald-600 font-black mt-1">€{item.price.toFixed(0)}</p>
+                        <p className="text-emerald-600 font-black mt-1">€{Number(item.price).toFixed(0)}</p>
                       </div>
                     </Link>
                   ))}
