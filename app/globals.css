@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a2e;
+  --surface: #f8f9fb;
+  --border: #e2e5ea;
+  --muted: #6b7280;
+  --accent: #0d6efd;
+  --accent-dark: #0b5ed7;
+  --font-sans: "BPG Arial", "BPG Glaho", "Noto Sans Georgian", "Segoe UI", sans-serif;
+  --font-heading: "BPG Nino Mtavruli", "BPG Nino Mtavruli Bold", "BPG Arial", sans-serif;
+  --font-mono: Consolas, "Cascadia Mono", "SFMono-Regular", monospace;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
